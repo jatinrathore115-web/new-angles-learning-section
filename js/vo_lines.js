@@ -437,6 +437,34 @@ const VO_LINES = {
   "vo256",
   5.3
  ],
+ "Look closely at the second pair — do its angles share a vertex and an arm?": [
+  "vo266",
+  5.78
+ ],
+ "Why does only the first pair meet the converse conditions?": [
+  "vo267",
+  3.98
+ ],
+ "Adding to 180° is not enough — the angles must also be adjacent.": [
+  "vo259",
+  5.62
+ ],
+ "The calibration system is ready for the asteroid mission.": [
+  "vo260",
+  3.89
+ ],
+ "Check: 128° + 42° = 170° — the pair must make 180°.": [
+  "vo261",
+  9.62
+ ],
+ "Check: 128° + 62° = 190° — the pair must make 180°.": [
+  "vo262",
+  9.74
+ ],
+ "67° + 23° = 90° — a linear pair makes 180°.": [
+  "vo263",
+  9.26
+ ],
  "∠2 shares an arm with ∠1. Look across the vertex.": [
   "vo100",
   5.21
