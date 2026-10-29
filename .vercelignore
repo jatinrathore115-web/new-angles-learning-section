@@ -1,12 +1,12 @@
-# deploy only the lesson itself (static site, no build step)
-.tmp/
-tools/
-docs/
-*.pdf
-*.md
-VO_GENERATION_PROMPT*
-learning session layout.png
-startbutton 000.png
-thumbnail0001.png
-CORRECT.mp3
-incorrect (1).mp3
+# deploy only the lesson itself (static site, no build step).
+# Root-only files are anchored with "/" so they never match assets/sfx/correct.mp3 etc.
+/.tmp/
+/tools/
+/docs/
+/*.pdf
+/*.md
+/learning session layout.png
+/startbutton 000.png
+/thumbnail0001.png
+/CORRECT.mp3
+/incorrect (1).mp3
