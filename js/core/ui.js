@@ -19,40 +19,67 @@
      The single primary text element of every screen. It carries the
      narrator's current step, the task prompt and feedback. *word* marks
      a highlighted keyword. */
-  function headingHTML(src) {
-    return src.split(/(\*[^*]+\*)/).filter(Boolean).map(part => {
+  /** words of a line, keeping *emphasis*: [{ w, em, key }] (key: lower-case, no trailing punctuation) */
+  function wordsOf(src) {
+    const out = [];
+    src.split(/(\*[^*]+\*)/).filter(Boolean).forEach(part => {
       const em = /^\*.*\*$/.test(part);
-      const txt = em ? part.slice(1, -1) : part;
-      return txt.split(/(\s+)/).map(w => /^\s+$/.test(w) ? ' ' : w ? `<span class="w">${em ? `<em>${w}</em>` : w}</span>` : '').join('');
-    }).join('');
+      (em ? part.slice(1, -1) : part).split(/\s+/).filter(Boolean).forEach(w => out.push({ w, em, key: w.toLowerCase().replace(/[.,;:?!’'"—]+$/g, '').replace(/^['"‘]+/, '') }));
+    });
+    return out;
   }
+  function headingHTML(src) { return wordsOf(src).map(o => o.em ? `<em>${o.w}</em>` : o.w).join(' '); }
+
+  /* Word-by-word narration. Each word rises in when the narrator reaches it:
+     with a recorded clip the pace comes from the clip length (character-weighted),
+     without one a calm narrator pace is used. line() returns the schedule so the
+     screen can fire geometry cues on the exact words that name them. */
   const lineEl = $('heading');
-  let lineTok = 0, lineKey = '';
-  /** text appears word by word at the voice's pace: each word lands as it is said */
-  async function line(text, { tone = '', dur = null } = {}) {
+  let lineTok = 0, lineKey = '', sched = null;
+  function line(text, { tone = '', dur = null } = {}) {
     const key = tone + '|' + text;
-    if (key === lineKey) return;
+    if (key === lineKey && sched) return sched;
     lineKey = key;
     const tok = ++lineTok;
-    if (lineEl.innerHTML) {
-      lineEl.classList.remove('in'); lineEl.classList.add('out');
-      await Tween.sleep(170);
-      if (tok !== lineTok) return;
-    }
-    const badge = tone === 'good' ? '<span class="tb good">✓</span>' : tone === 'warn' ? '<span class="tb warn">!</span>' : '';
-    lineEl.className = 'heading ' + tone + (text.replace(/\*/g, '').length > 50 ? ' long' : '');
-    lineEl.innerHTML = badge + headingHTML(text);
-    // per-character time from the clip length (silent lines use a calm reading pace)
-    const chars = text.replace(/\*/g, '').length || 1;
-    const perChar = dur ? Math.max(16, (dur - 0.35) * 1000 / chars) : 22;
-    let at = dur ? 120 : 0;   // clips open with ~0.3 s of silence; first word lands with the voice
-    [...lineEl.querySelectorAll('.w, .tb')].forEach(w => {
-      w.style.transitionDelay = `${Math.round(at)}ms`;
-      if (w.classList.contains('w')) at += (w.textContent.length + 1) * perChar;
+    const words = wordsOf(text);
+    const lead = lineEl.innerHTML ? 200 : 0;               // the previous line lifts away first
+    const chars = words.reduce((n, o) => n + o.w.length + 1, 0) || 1;
+    const perChar = dur ? Math.max(14, (dur - 0.35) * 1000 / chars) : 0;
+    let at = dur ? 140 : 60;
+    const times = words.map(o => {
+      const t = at;
+      at += dur ? (o.w.length + 1) * perChar : 150 + (/[,;:—]$/.test(o.w) ? 160 : /[.?!]$/.test(o.w) ? 220 : 0);
+      return { key: o.key, t };
     });
-    requestAnimationFrame(() => requestAnimationFrame(() => { if (tok === lineTok) lineEl.classList.add('in'); }));
+    sched = { start: performance.now() + lead * Tween.TS, lead, times, end: at, text, tone };
+    current = { text, tone };
+    stopFollow();
+    const show = () => {
+      if (tok !== lineTok) return;
+      const badge = tone === 'good' ? '<i class="tb good"></i>' : tone === 'warn' ? '<i class="tb warn"></i>' : '';
+      const n = text.replace(/\*/g, '').length;
+      lineEl.className = 'heading ' + tone + (n > 70 ? ' xlong' : n > 46 ? ' long' : '');
+      lineEl.innerHTML = `<span class="ln">${badge}${words.map((o, i) => `<span class="w" style="transition-delay:${Math.round(times[i].t * Tween.TS)}ms">${o.em ? `<em>${o.w}</em>` : o.w}</span>`).join(' ')}</span>`;
+      requestAnimationFrame(() => requestAnimationFrame(() => { if (tok === lineTok) lineEl.classList.add('in'); }));
+      // the word being spoken right now carries a soft highlight (the reader's place-keeper)
+      const ws = [...lineEl.querySelectorAll('.w')];
+      times.forEach((t, i) => follow.push(setTimeout(() => {
+        if (tok !== lineTok) return;
+        ws.forEach((w, j) => w.classList.toggle('cur', j === i));
+      }, t.t * Tween.TS)));
+      follow.push(setTimeout(() => { if (tok === lineTok) ws.forEach(w => w.classList.remove('cur')); }, (at + 260) * Tween.TS));
+    };
+    if (lead) { lineEl.classList.remove('in'); lineEl.classList.add('out'); setTimeout(show, lead * Tween.TS); }
+    else show();
+    return sched;
   }
-  function clearLine() { lineTok++; lineKey = ''; lineEl.classList.remove('in'); lineEl.classList.add('out'); }
+  let follow = [], current = null;
+  function stopFollow() { follow.forEach(clearTimeout); follow = []; }
+  function clearLine() { stopFollow(); lineTok++; lineKey = ''; sched = null; current = null; lineEl.classList.remove('in'); lineEl.classList.add('out'); }
+  /** the line on screen now (for replay) */
+  function currentLine() { return current; }
+  /** show the current line again from its first word (replay) */
+  function restartLine(dur) { if (!current) return null; const c = current; lineKey = ''; return line(c.text, { tone: c.tone, dur }); }
 
   const panel = $('panel'), panelBody = $('panelBody');
 
@@ -153,7 +180,6 @@
     const unit = opts.unit ?? '°';
     const val = trigger.querySelector('.pick-val'), ic = trigger.querySelector('.pick-ic');
     const wrong = new Set();
-    const badges = ['A', 'B', 'C', 'D'];
     let menu = null, ok = false, revert = null;
     trigger.setAttribute('aria-label', `${opts.label || 'Choose an answer'}: not answered`);
 
@@ -187,7 +213,7 @@
         ok = true;
         trigger.classList.add('ok'); trigger.disabled = true; ic.innerHTML = TICK;
         trigger.setAttribute('aria-label', `${opts.label || 'Answer'}: ${v}${unit}, correct`);
-        correct({ small: true });
+        correct();
       } else {
         wrong.add(v);
         void trigger.offsetWidth; trigger.classList.add('bad');
@@ -201,7 +227,7 @@
       if (openPick && openPick !== api) openPick.close();
       if (menu) { close(); return; }
       menu = h(`<div class="pmenu" role="listbox" aria-label="${opts.label || 'Options'}">${opts.options.map((v, i) =>
-        `<button type="button" class="popt ${wrong.has(v) ? 'wrong' : ''}" role="option" data-v="${v}" ${wrong.has(v) ? 'aria-disabled="true" tabindex="-1"' : ''} style="--d:${i * 45}ms"><i>${wrong.has(v) ? '✕' : badges[i]}</i><b>${v}${unit}</b></button>`).join('')}</div>`);
+        `<button type="button" class="popt ${wrong.has(v) ? 'wrong' : ''}" role="option" data-v="${v}" ${wrong.has(v) ? 'aria-disabled="true" tabindex="-1"' : ''} style="--d:${i * 45}ms"><i>${wrong.has(v) ? '✕' : ''}</i><b>${v}${unit}</b></button>`).join('')}</div>`);
       stage.appendChild(menu);
       position();
       openPick = api;
@@ -252,124 +278,60 @@
 
   /* ------------------------------------------------- answer feedback
      One place for right/wrong feedback so every screen behaves the same:
-     correct → recorded chime + falling angles; incorrect → recorded buzz-free
-     "try again" cue (the line/hint and the shake carry the explanation). */
+     correct  → assets/sfx/correct.mp3 + the angle rain;
+     incorrect → assets/sfx/incorrect.mp3 only (the geometry gives the clue,
+     the narration line gives the hint). Passive screens never call these. */
+
+  /* ANGLE RAIN — small colourful angle glyphs fall from above the frame.
+     The layer sits *behind* the geometry, equations, narration and controls,
+     so it can never cover them; most pieces fall in the side lanes. Transform/
+     opacity only, cached glyph markup, everything is removed within ~2 s. */
   const fall = h('<div class="fall" aria-hidden="true"></div>');
   stage.appendChild(fall);
-  const FALL_COLORS = ['#2de2ff', '#ff4fe6', '#ffd426', '#34f5c5', '#b98aff', '#ffb347'];
-  const FALL_KINDS = [35, 60, 90, 125, 180];
-  function angleGlyph(deg, color) {
-    const O = { x: 6, y: 30 }, L = 26, r = 10;
-    const p = G.at(O, deg, L);
+  const RAIN_COLORS = ['#35E7FF', '#FF48D7', '#FFD84A', '#A66CFF', '#38F2B2'];
+  const RAIN_KINDS = [35, 60, 90, 125, 180];
+  const GLYPHS = {};
+  function glyph(deg, color) {
+    const k = deg + color;
+    if (GLYPHS[k]) return GLYPHS[k];
+    const O = { x: deg === 180 ? 28 : 6, y: 30 }, L = 24, p = G.at(O, deg, L);
     const mark = deg === 90
       ? `<path d="M${O.x + 8} ${O.y} V${O.y - 8} H${O.x}" fill="none" stroke="${color}" stroke-width="2.4"/>`
-      : `<path d="${G.arcPath(O, r, 0, deg, true)}" fill="${color}" fill-opacity=".28" stroke="${color}" stroke-width="2.2"/>`;
-    const x0 = deg === 180 ? 30 : 6;   // centre straight angles in the box
-    return `<svg viewBox="${deg === 180 ? -20 : 0} 0 ${deg === 180 ? 56 : 36} 36"><g stroke-linecap="round">${mark}
-      <line x1="${O.x}" y1="${O.y}" x2="${O.x + L}" y2="${O.y}" stroke="${color}" stroke-width="3.8"/>
-      <line x1="${O.x}" y1="${O.y}" x2="${p.x.toFixed(1)}" y2="${p.y.toFixed(1)}" stroke="${color}" stroke-width="3.8"/>
-      <circle cx="${O.x}" cy="${O.y}" r="3" fill="#fff"/></g></svg>`;
+      : `<path d="${G.arcPath(O, 10, 0, deg, true)}" fill="${color}" fill-opacity=".3" stroke="${color}" stroke-width="2.2"/>`;
+    return (GLYPHS[k] = `<svg viewBox="0 0 ${deg === 180 ? 56 : 36} 36"><g stroke-linecap="round">${mark}
+      <line x1="${O.x}" y1="${O.y}" x2="${O.x + L}" y2="${O.y}" stroke="${color}" stroke-width="4.2"/>
+      <line x1="${O.x}" y1="${O.y}" x2="${p.x.toFixed(1)}" y2="${p.y.toFixed(1)}" stroke="${color}" stroke-width="4.2"/>
+      <circle cx="${O.x}" cy="${O.y}" r="2.8" fill="#fff"/></g></svg>`);
   }
-  /* "Angle rain": three depth layers give parallax — near pieces are larger,
-     brighter and faster; far ones small, dim and slow. Released over ~1 s so it
-     reads as rain, not a single drop. Glyph markup is cached per shape+colour. */
-  const GLYPHS = {};
-  const glyph = (deg, color) => GLYPHS[deg + color] || (GLYPHS[deg + color] = angleGlyph(deg, color));
-  const LAYERS = [
-    { share: 0.25, size: [30, 44], dur: [2.0, 2.6], op: 1 },      // near
-    { share: 0.40, size: [20, 30], dur: [2.6, 3.3], op: 0.85 },   // middle
-    { share: 0.35, size: [12, 20], dur: [3.3, 4.2], op: 0.6 },    // far
-  ];
   const rnd = (a, b) => a + Math.random() * (b - a);
-  let lastFall = 0;
-  function celebrate({ small = false } = {}) {
+  let lastRain = 0;
+  function rain({ small = false } = {}) {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const now = performance.now();
-    if (now - lastFall < 1100) return;
-    lastFall = now;
-    const n = small ? 30 : 72, spread = small ? 0.6 : 1.1;   // pieces · seconds of release
+    if (now - lastRain < 900) return;
+    lastRain = now;
+    const n = small ? 30 : 46;
     const frag = document.createDocumentFragment();
     let longest = 0;
     for (let i = 0; i < n; i++) {
-      const t = i / n;
-      const L = t < LAYERS[0].share ? LAYERS[0] : t < LAYERS[0].share + LAYERS[1].share ? LAYERS[1] : LAYERS[2];
-      const size = rnd(...L.size), dur = rnd(...L.dur), delay = Math.random() * spread;
-      // stratified across the full width (with jitter) so the rain never clumps
-      const slot = (i * 37) % n;
-      const x = 1 + (slot + Math.random()) * (98 / n);
-      const r0 = Math.round(Math.random() * 360), spin = (Math.random() < 0.5 ? -1 : 1) * rnd(120, 380);
+      // 80 % in the side lanes, the rest anywhere (still behind the figure)
+      const side = Math.random() < 0.72;
+      const x = side ? (i % 2 ? rnd(2, 27) : rnd(73, 98)) : rnd(28, 72);
+      const size = rnd(24, 42), dur = rnd(1.2, 1.65), delay = rnd(0, 0.3);
+      const r0 = Math.round(rnd(0, 360)), spin = (Math.random() < 0.5 ? -1 : 1) * rnd(90, 260);
       const el = document.createElement('i');
       el.className = 'fa';
-      el.style.cssText = `left:${x.toFixed(1)}%;width:${size.toFixed(0)}px;height:${size.toFixed(0)}px;--op:${L.op};--r0:${r0}deg;--r1:${r0 + spin}deg;--sway:${rnd(-70, 70).toFixed(0)}px;animation-duration:${dur.toFixed(2)}s;animation-delay:${delay.toFixed(2)}s`;
-      el.innerHTML = glyph(FALL_KINDS[(i * 3 + Math.floor(Math.random() * 2)) % FALL_KINDS.length], FALL_COLORS[Math.floor(Math.random() * FALL_COLORS.length)]);
+      el.style.cssText = `left:${x.toFixed(1)}%;width:${size.toFixed(0)}px;height:${size.toFixed(0)}px;--op:${rnd(0.75, 1).toFixed(2)};--r0:${r0}deg;--r1:${r0 + spin}deg;--sway:${rnd(-50, 50).toFixed(0)}px;animation-duration:${dur.toFixed(2)}s;animation-delay:${delay.toFixed(2)}s`;
+      el.innerHTML = glyph(RAIN_KINDS[i % RAIN_KINDS.length], RAIN_COLORS[(i * 7 + (Math.random() * 5 | 0)) % RAIN_COLORS.length]);
       frag.appendChild(el);
       longest = Math.max(longest, dur + delay);
     }
     const batch = [...frag.children];
     fall.appendChild(frag);
-    setTimeout(() => batch.forEach(el => el.remove()), longest * 1000 + 150);
+    setTimeout(() => batch.forEach(el => el.remove()), longest * 1000 + 100);
   }
-  /* "Oops" face: small angles fly in from all four sides and assemble into a
-     sad face (round outline, droopy eyes, frown), hold briefly, then shrink away.
-     Short (~1.5 s), never blocks input, warm colours rather than alarm-red. */
-  const sad = h('<div class="sadface" aria-hidden="true"><i class="sad-halo"></i></div>');
-  stage.appendChild(sad);
-  const SAD = { ring: '#ff8a7a', eye: '#ffd426', mouth: '#ffd426' };
-  function sadFace() {
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    sad.querySelectorAll('.sp').forEach(e => e.remove());
-    const parts = [];
-    const R = 122;
-    // outline: 18 angles around a circle, each turned along the curve
-    for (let i = 0; i < 18; i++) {
-      const t = i / 18 * 360;
-      parts.push({ x: Math.cos(t * Math.PI / 180) * R, y: Math.sin(t * Math.PI / 180) * R, rot: t + 90, size: 34, deg: 60, color: SAD.ring });
-    }
-    // eyes: right angles opened upward (a droopy "V"), the white vertex dot reads as the pupil
-    parts.push({ x: -42, y: -14, rot: -45, size: 34, deg: 90, color: SAD.eye });
-    parts.push({ x: 42, y: -14, rot: -45, size: 34, deg: 90, color: SAD.eye });
-    // sad eyebrows: straight angles, inner ends raised
-    parts.push({ x: -44, y: -56, rot: -16, size: 40, deg: 180, color: SAD.eye });
-    parts.push({ x: 44, y: -56, rot: 16, size: 40, deg: 180, color: SAD.eye });
-    // frown: 7 angles along a downward-curving arc
-    for (let i = 0; i < 7; i++) {
-      const a = 218 + i * (104 / 6);              // arc 218°–322° about a centre below the mouth
-      const ax = Math.cos(a * Math.PI / 180) * 66, ay = 112 + Math.sin(a * Math.PI / 180) * 66;
-      parts.push({ x: ax, y: ay, rot: a + 90, size: 30, deg: 60, color: SAD.mouth });
-    }
-    const W = 1600, H = 900;
-    parts.forEach((p, i) => {
-      const el = document.createElement('i');
-      el.className = 'sp';
-      el.style.width = el.style.height = p.size + 'px';
-      el.innerHTML = glyph(p.deg, p.color);
-      if (p.flip) el.firstChild.style.transform = 'scaleX(-1)';
-      sad.appendChild(el);
-      // entry from top / right / bottom / left in turn, spread along that edge
-      const side = i % 4, k = (i * 0.37) % 1;
-      const from = side === 0 ? { x: (k - 0.5) * W, y: -H / 2 - 60 }
-        : side === 1 ? { x: W / 2 + 60, y: (k - 0.5) * H }
-          : side === 2 ? { x: (k - 0.5) * W, y: H / 2 + 60 }
-            : { x: -W / 2 - 60, y: (k - 0.5) * H };
-      const spin = (Math.random() < 0.5 ? -1 : 1) * (180 + Math.random() * 180);
-      const end = `translate(${p.x - p.size / 2}px, ${p.y - p.size / 2}px) rotate(${p.rot}deg)`;
-      if (reduce) { el.animate([{ opacity: 0, transform: end }, { opacity: 1, transform: end }, { opacity: 1, transform: end }, { opacity: 0, transform: end }], { duration: 1300, fill: 'forwards' }); return; }
-      const delay = (i % 9) * 28 + Math.random() * 60;
-      el.animate([
-        { transform: `translate(${from.x}px, ${from.y}px) rotate(${p.rot + spin}deg) scale(.6)`, opacity: 0 },
-        { opacity: 1, offset: 0.25 },
-        { transform: `${end} scale(1.12)`, opacity: 1, offset: 0.85 },
-        { transform: `${end} scale(1)`, opacity: 1 },
-      ], { duration: 680, delay, easing: 'cubic-bezier(.2,.75,.25,1)', fill: 'both' });
-    });
-    sad.classList.remove('on', 'out'); void sad.offsetWidth; sad.classList.add('on');
-    clearTimeout(sad._t1); clearTimeout(sad._t2);
-    sad._t1 = setTimeout(() => sad.classList.add('out'), reduce ? 1000 : 1150);
-    sad._t2 = setTimeout(() => { sad.classList.remove('on', 'out'); sad.querySelectorAll('.sp').forEach(e => e.remove()); }, 1600);
-  }
-
-  function correct(opts) { Sound.play('answer.correct'); celebrate(opts); }
-  function incorrect() { Sound.play('answer.incorrect'); sadFace(); }
+  function correct(opts) { Sound.play('answer.correct'); rain(opts); }
+  function incorrect() { Sound.play('answer.incorrect'); }
 
   function toStage(evt) {
     const s = stage.getBoundingClientRect(), k = s.width / 1600;
@@ -378,5 +340,5 @@
 
   function setFocus(x, y) { const f = $('bgFocus'); f.style.left = (x - 380) + 'px'; f.style.top = (y - 380) + 'px'; }
 
-  window.UI = { h, rectOf, toStage, line, clearLine, correct, incorrect, celebrate, Panel, choices, ov, clearOverlay, fadeOverlay, inNext, fly, pickHTML, pick, closePicks, Dock, chapter, setFocus, headingHTML };
+  window.UI = { h, rectOf, toStage, line, clearLine, currentLine, restartLine, correct, incorrect, rain, wordsOf, Panel, choices, ov, clearOverlay, fadeOverlay, inNext, fly, pickHTML, pick, closePicks, Dock, chapter, setFocus, headingHTML };
 })();

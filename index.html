@@ -49,11 +49,14 @@
       <!-- Geometry layer (SVG, stage coordinates) -->
       <svg id="geo" viewBox="0 0 1600 900" aria-label="Geometry workspace"></svg>
 
+      <!-- Persistent labels, readouts and equations (carried between screens) -->
+      <div id="persist"></div>
+
       <!-- Header -->
       <header class="hud">
         <button class="progress" id="progress" title="Open lesson map" aria-label="Open lesson map">
-          <span class="progress-num"><b id="pNum">01</b> / <span id="pTot">29</span></span>
-          <span class="progress-topic" id="pTopic">POINTS &amp; RAYS</span>
+          <span class="progress-num"><b id="pNum">01</b> / <span id="pTot">74</span></span>
+          <span class="progress-topic" id="pTopic">GEOMETRY OBJECTS</span>
         </button>
         <div class="progress-bar"><i id="pBar"></i></div>
         <h1 class="heading" id="heading"></h1>
@@ -71,6 +74,9 @@
 
       <!-- Screen navigation: same place on every screen, top right -->
       <nav class="topnav" aria-label="Screen navigation">
+        <button class="btn btn-replay" id="bReplay" aria-label="Replay narration" title="Replay narration">
+          <svg viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6"/><path d="M18.3 6.3a8 8 0 0 1 0 11.4"/></svg>
+        </button>
         <button class="btn btn-back" id="bBack" aria-label="Previous screen">
           <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>BACK
         </button>
@@ -124,16 +130,20 @@
   <script src="js/vo_lines.js"></script>
   <script src="js/core/voice.js"></script>
   <script src="js/core/scene.js"></script>
+  <script src="js/core/persist.js"></script>
   <script src="js/core/mini.js"></script>
   <script src="js/core/ui.js"></script>
   <script src="js/core/engine.js"></script>
   <script src="js/screens/common.js"></script>
-  <script src="js/screens/ch1-building.js"></script>
-  <script src="js/screens/ch2-relationships.js"></script>
-  <script src="js/screens/ch3-linear-pairs.js"></script>
-  <script src="js/screens/ch4-intersecting.js"></script>
-  <script src="js/screens/ch5-proof.js"></script>
-  <script src="js/screens/ch6-apply.js"></script>
+  <script src="js/screens/s1-foundation.js"></script>
+  <script src="js/screens/s2-classify.js"></script>
+  <script src="js/screens/s3-pairs.js"></script>
+  <script src="js/screens/s4-adjacent.js"></script>
+  <script src="js/screens/s5-linear.js"></script>
+  <script src="js/screens/s6-converse.js"></script>
+  <script src="js/screens/s7-intersect.js"></script>
+  <script src="js/screens/s8-proof.js"></script>
+  <script src="js/screens/s9-apply.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

@@ -25,11 +25,6 @@
     "spoken": "A line goes on in both directions."
   },
   {
-    "id": "vo006",
-    "line": "Match each name to its drawing.",
-    "spoken": "Match each name to its drawing."
-  },
-  {
     "id": "vo007",
     "line": "A point has no length — it only marks a position.",
     "spoken": "A point has no length. It only marks a position."
@@ -50,374 +45,264 @@
     "spoken": "A line has no endpoints. It goes on both ways."
   },
   {
+    "id": "vo006",
+    "line": "Match each name to its drawing.",
+    "spoken": "Match each name to its drawing."
+  },
+  {
     "id": "vo011",
     "line": "All matched — endpoints and arrows tell them apart.",
     "spoken": "All matched! Endpoints and arrows tell them apart."
   },
   {
-    "id": "vo012",
-    "line": "Now give this ray a partner.",
-    "spoken": "Now give this ray a partner."
+    "id": "vo162",
+    "line": "Two rays begin at the same point O.",
+    "spoken": "Two rays begin at the same point O."
   },
   {
-    "id": "vo013",
-    "line": "Two rays with one common endpoint form an angle.",
-    "spoken": "Two rays with one common endpoint form an angle."
+    "id": "vo163",
+    "line": "When one ray turns, the two rays form an angle.",
+    "spoken": "When one ray turns, the two rays form an angle."
   },
   {
-    "id": "vo014",
-    "line": "The two rays are the arms.",
-    "spoken": "The two rays are the arms."
+    "id": "vo164",
+    "line": "O is called the vertex, and OA and OB are the arms.",
+    "spoken": "O is called the vertex, and O A and O B are the arms."
   },
   {
-    "id": "vo015",
-    "line": "Their common endpoint, O, is the vertex.",
-    "spoken": "Their common endpoint, O, is the vertex."
+    "id": "vo165",
+    "line": "An angle smaller than 90° is acute.",
+    "spoken": "An angle smaller than ninety degrees is acute."
   },
   {
-    "id": "vo016",
-    "line": "Name it with the vertex in the middle: ∠AOB.",
-    "spoken": "Name it with the vertex in the middle: angle A, O, B."
+    "id": "vo166",
+    "line": "An angle of 90° is a right angle.",
+    "spoken": "An angle of ninety degrees is a right angle."
   },
   {
-    "id": "vo017",
-    "line": "Move ray OB.",
-    "spoken": "Move the ray O B."
+    "id": "vo167",
+    "line": "An angle between 90° and 180° is obtuse.",
+    "spoken": "An angle between ninety degrees and one hundred and eighty degrees is obtuse."
   },
   {
-    "id": "vo018",
-    "line": "Tap the two arms.",
-    "spoken": "Tap the two arms."
+    "id": "vo168",
+    "line": "An angle of 180° is straight.",
+    "spoken": "An angle of one hundred and eighty degrees is straight."
   },
   {
-    "id": "vo019",
-    "line": "That is the vertex. Tap the two arms.",
-    "spoken": "That is the vertex. Tap the two arms."
+    "id": "vo169",
+    "line": "An angle between 180° and 360° is reflex.",
+    "spoken": "An angle between one hundred and eighty degrees and three hundred and sixty degrees is reflex."
   },
   {
-    "id": "vo020",
-    "line": "Now tap the vertex.",
-    "spoken": "Now tap the vertex."
+    "id": "vo170",
+    "line": "Which angle is obtuse?",
+    "spoken": "Which angle is obtuse?"
   },
   {
-    "id": "vo021",
-    "line": "That is an arm. Tap the shared endpoint.",
-    "spoken": "That is an arm. Tap the shared endpoint."
+    "id": "vo171",
+    "line": "45° is less than 90°. Obtuse lies between 90° and 180°.",
+    "spoken": "Forty-five degrees is less than ninety degrees. Obtuse lies between ninety degrees and one hundred and eighty degrees."
   },
   {
-    "id": "vo022",
-    "line": "OA and OB are the arms; O is the vertex.",
-    "spoken": "O A and O B are the arms. O is the vertex."
+    "id": "vo172",
+    "line": "220° is more than 180°. Obtuse lies between 90° and 180°.",
+    "spoken": "Two hundred and twenty degrees is more than one hundred and eighty degrees. Obtuse lies between ninety degrees and one hundred and eighty degrees."
   },
   {
-    "id": "vo023",
-    "line": "Angles are measured in degrees.",
-    "spoken": "Angles are measured in degrees."
+    "id": "vo173",
+    "line": "125° is more than 90° and less than 180° — obtuse.",
+    "spoken": "One hundred and twenty-five degrees is more than ninety degrees and less than one hundred and eighty degrees, obtuse."
   },
   {
-    "id": "vo024",
-    "line": "Drag the arm. Find every type of angle.",
-    "spoken": "Drag the arm. Find every type of angle."
+    "id": "vo174",
+    "line": "Which angle is reflex?",
+    "spoken": "Which angle is reflex?"
   },
   {
-    "id": "vo025",
-    "line": "The angle type depends on how far the ray turns.",
-    "spoken": "The angle type depends on how far the ray turns."
+    "id": "vo175",
+    "line": "95° is less than 180°. Reflex is more than a straight angle.",
+    "spoken": "Ninety-five degrees is less than one hundred and eighty degrees. Reflex is more than a straight angle."
   },
   {
-    "id": "vo026",
-    "line": "Make an obtuse angle.",
-    "spoken": "Make an obtuse angle."
+    "id": "vo176",
+    "line": "180° is exactly straight. Reflex is more than 180°.",
+    "spoken": "One hundred and eighty degrees is exactly straight. Reflex is more than one hundred and eighty degrees."
   },
   {
-    "id": "vo027",
-    "line": "Look at the size of the angle again.",
-    "spoken": "Look at the size of the angle again."
+    "id": "vo177",
+    "line": "230° is between 180° and 360° — reflex.",
+    "spoken": "Two hundred and thirty degrees is between one hundred and eighty degrees and three hundred and sixty degrees, reflex."
   },
   {
-    "id": "vo028",
-    "line": "That is exactly a right angle. Open it wider.",
-    "spoken": "That is exactly a right angle. Open it wider."
+    "id": "vo178",
+    "line": "What is the sum of these angles?",
+    "spoken": "What is the sum of these angles?"
   },
   {
-    "id": "vo029",
-    "line": "Obtuse lies between the two dashed guides.",
-    "spoken": "Obtuse lies between the two dashed guides."
+    "id": "vo179",
+    "line": "A little more — 35 + 50 is 85, then add 5.",
+    "spoken": "A little more, thirty-five plus fifty is eighty-five, then add five."
   },
   {
-    "id": "vo030",
-    "line": "Too wide — obtuse is less than a straight angle.",
-    "spoken": "Too wide. Obtuse is less than a straight angle."
+    "id": "vo180",
+    "line": "A little less — 35 + 50 is 85, then add 5.",
+    "spoken": "A little less, thirty-five plus fifty is eighty-five, then add five."
   },
   {
-    "id": "vo031",
-    "line": "Yes — more than 90°, less than 180°.",
-    "spoken": "Yes! More than ninety degrees, less than one hundred and eighty degrees."
+    "id": "vo181",
+    "line": "Correct! These two angles add to 90°.",
+    "spoken": "Correct! These two angles add to ninety degrees."
   },
   {
-    "id": "vo032",
-    "line": "What happens if we keep turning?",
-    "spoken": "What happens if we keep turning?"
+    "id": "vo182",
+    "line": "Angles whose measures add to 90° are called complementary angles.",
+    "spoken": "Angles whose measures add to ninety degrees are called complementary angles."
   },
   {
-    "id": "vo033",
-    "line": "Keep turning — past a straight angle.",
-    "spoken": "Keep turning, past a straight angle."
+    "id": "vo183",
+    "line": "What about these two?",
+    "spoken": "What about these two?"
   },
   {
-    "id": "vo034",
-    "line": "Now make a reflex angle.",
-    "spoken": "Now make a reflex angle."
+    "id": "vo184",
+    "line": "A little more — 125 + 50 is 175, then add 5.",
+    "spoken": "A little more, one hundred and twenty-five plus fifty is one hundred and seventy-five, then add five."
   },
   {
-    "id": "vo035",
-    "line": "That is a straight angle. Keep turning.",
-    "spoken": "That is a straight angle. Keep turning."
+    "id": "vo185",
+    "line": "A little less — 125 + 50 is 175, then add 5.",
+    "spoken": "A little less, one hundred and twenty-five plus fifty is one hundred and seventy-five, then add five."
   },
   {
-    "id": "vo036",
-    "line": "Look at the size again. Reflex is more than a straight angle.",
-    "spoken": "Look at the size again. Reflex is more than a straight angle."
+    "id": "vo186",
+    "line": "Correct! These two angles add to 180°.",
+    "spoken": "Correct! These two angles add to one hundred and eighty degrees."
   },
   {
-    "id": "vo037",
-    "line": "Exactly — more than 180°, less than a full turn.",
-    "spoken": "Exactly! More than one hundred and eighty degrees, less than a full turn."
+    "id": "vo187",
+    "line": "Angles whose measures add to 180° are supplementary.",
+    "spoken": "Angles whose measures add to one hundred and eighty degrees are supplementary."
   },
   {
-    "id": "vo038",
-    "line": "Find each pair's total.",
-    "spoken": "Find each pair's total."
+    "id": "vo188",
+    "line": "Let’s look at these two angles.",
+    "spoken": "Let's look at these two angles."
   },
   {
-    "id": "vo039",
-    "line": "Add each pair and choose its total.",
-    "spoken": "Add each pair and choose its total."
+    "id": "vo189",
+    "line": "What if they had the same vertex and a common arm?",
+    "spoken": "What if they had the same vertex and a common arm?"
   },
   {
-    "id": "vo040",
-    "line": "180° is a straight angle. Add 35° and 55° again.",
-    "spoken": "One hundred and eighty degrees is a straight angle. Add thirty-five degrees and fifty-five degrees again."
+    "id": "vo190",
+    "line": "Let’s find out.",
+    "spoken": "Let's find out."
   },
   {
-    "id": "vo041",
-    "line": "Not quite. Add 35° + 55° carefully.",
-    "spoken": "Not quite. Add thirty-five degrees plus fifty-five degrees, carefully."
+    "id": "vo191",
+    "line": "The two angles share vertex O.",
+    "spoken": "The two angles share vertex O."
   },
   {
-    "id": "vo042",
-    "line": "A little more. Try 125 + 50, then add 5.",
-    "spoken": "A little more. Try one hundred and twenty-five plus fifty, then add five."
+    "id": "vo192",
+    "line": "They also share arm OC without overlapping.",
+    "spoken": "They also share arm O C without overlapping."
   },
   {
-    "id": "vo043",
-    "line": "A little less. Try 125 + 50, then add 5.",
-    "spoken": "A little less. Try one hundred and twenty-five plus fifty, then add five."
+    "id": "vo193",
+    "line": "These are adjacent angles.",
+    "spoken": "These are adjacent angles."
   },
   {
-    "id": "vo044",
-    "line": "These add to 90° — they are complementary.",
-    "spoken": "These add to ninety degrees. They are complementary."
+    "id": "vo194",
+    "line": "Two angles which share a common arm and vertex without any overlap are called adjacent angles.",
+    "spoken": "Two angles which share a common arm and vertex without any overlap are called adjacent angles."
   },
   {
-    "id": "vo045",
-    "line": "These add to 180° — they are supplementary.",
-    "spoken": "These add to one hundred and eighty degrees. They are supplementary."
+    "id": "vo195",
+    "line": "Which of these pairs are adjacent angles?",
+    "spoken": "Which of these pairs are adjacent angles?"
   },
   {
-    "id": "vo046",
-    "line": "What if two angles also share a vertex?",
-    "spoken": "What if two angles also share a vertex?"
+    "id": "vo196",
+    "line": "They share a vertex — but no arm. Check whether the two angles share both a vertex and an arm.",
+    "spoken": "They share a vertex, but no arm. Check whether the two angles share both a vertex and an arm."
   },
   {
-    "id": "vo047",
-    "line": "Here is ∠AOB.",
-    "spoken": "Here is angle A O B."
+    "id": "vo197",
+    "line": "They share a vertex and an arm — but one angle covers the other.",
+    "spoken": "They share a vertex and an arm, but one angle covers the other."
   },
   {
-    "id": "vo048",
-    "line": "Draw ray OC inside it.",
-    "spoken": "Draw ray O C inside it."
+    "id": "vo264",
+    "line": "Yes — one vertex, one shared arm, no overlap.",
+    "spoken": "Yes, one vertex, one shared arm, no overlap."
   },
   {
-    "id": "vo049",
-    "line": "The two angles share the same vertex.",
-    "spoken": "The two angles share the same vertex."
+    "id": "vo199",
+    "line": "What if their non-common arms lie on a straight line?",
+    "spoken": "What if their non-common arms lie on a straight line?"
   },
   {
-    "id": "vo050",
-    "line": "They also share one arm.",
-    "spoken": "They also share one arm."
+    "id": "vo200",
+    "line": "Drag A till OA and OB lie on a straight line.",
+    "spoken": "Drag A till O A and O B lie on a straight line."
   },
   {
-    "id": "vo051",
-    "line": "Angles like these are adjacent angles.",
-    "spoken": "Angles like these are adjacent angles."
+    "id": "vo201",
+    "line": "The outer arms now make one straight line.",
+    "spoken": "The outer arms now make one straight line."
   },
   {
-    "id": "vo052",
-    "line": "Drag C between OA and OB.",
-    "spoken": "Drag C between O A and O B."
+    "id": "vo202",
+    "line": "Move the common arm and watch both measures.",
+    "spoken": "Move the common arm and watch both measures."
   },
   {
-    "id": "vo053",
-    "line": "Tap the shared vertex.",
-    "spoken": "Tap the shared vertex."
+    "id": "vo203",
+    "line": "One angle grows as the other shrinks.",
+    "spoken": "One angle grows as the other shrinks."
   },
   {
-    "id": "vo054",
-    "line": "Now tap the common arm.",
-    "spoken": "Now tap the common arm."
+    "id": "vo204",
+    "line": "What stays the same when the common arm moves?",
+    "spoken": "What stays the same when the common arm moves?"
   },
   {
-    "id": "vo055",
-    "line": "OA belongs to only one angle. Which arm do both use?",
-    "spoken": "O A belongs to only one angle. Which arm do both use?"
+    "id": "vo205",
+    "line": "The two adjacent angles always add to 180°.",
+    "spoken": "The two adjacent angles always add to one hundred and eighty degrees."
   },
   {
-    "id": "vo056",
-    "line": "OB belongs to only one angle. Which arm do both use?",
-    "spoken": "O B belongs to only one angle. Which arm do both use?"
+    "id": "vo206",
+    "line": "A ray standing on a line forms a linear pair.",
+    "spoken": "A ray standing on a line forms a linear pair."
   },
   {
-    "id": "vo057",
-    "line": "Common vertex, common arm, no overlap.",
-    "spoken": "Common vertex, common arm, no overlap."
+    "id": "vo207",
+    "line": "The angles in a linear pair add to 180°.",
+    "spoken": "The angles in a linear pair add to one hundred and eighty degrees."
   },
   {
-    "id": "vo058",
-    "line": "Which pair is adjacent?",
-    "spoken": "Which pair is adjacent?"
+    "id": "vo208",
+    "line": "Which diagram shows a linear pair?",
+    "spoken": "Which diagram shows a linear pair?"
   },
   {
-    "id": "vo059",
-    "line": "These overlap. Adjacent angles sit side by side.",
-    "spoken": "These overlap. Adjacent angles sit side by side."
+    "id": "vo209",
+    "line": "Adjacent, with a common arm — but do the outer arms form one straight line?",
+    "spoken": "Adjacent, with a common arm, but do the outer arms form one straight line?"
   },
   {
-    "id": "vo060",
-    "line": "They share a vertex — but do they share an arm?",
-    "spoken": "They share a vertex. But do they share an arm?"
+    "id": "vo265",
+    "line": "Yes — adjacent, and the outer arms form a straight line.",
+    "spoken": "Yes, adjacent, and the outer arms form a straight line."
   },
   {
-    "id": "vo061",
-    "line": "Correct — one vertex, one arm, no overlap.",
-    "spoken": "Correct! One vertex, one arm, no overlap."
-  },
-  {
-    "id": "vo062",
-    "line": "Move C and watch both angles.",
-    "spoken": "Move C and watch both angles."
-  },
-  {
-    "id": "vo063",
-    "line": "The two angles change...",
-    "spoken": "The two angles change..."
-  },
-  {
-    "id": "vo064",
-    "line": "...but their total stays 180°.",
-    "spoken": "...but their total stays one hundred and eighty degrees."
-  },
-  {
-    "id": "vo065",
-    "line": "What stays the same?",
-    "spoken": "What stays the same?"
-  },
-  {
-    "id": "vo066",
-    "line": "Drag C again — do the two measures really stay the same?",
-    "spoken": "Drag C again. Do the two measures really stay the same?"
-  },
-  {
-    "id": "vo067",
-    "line": "Wherever C goes, the angles add up to 180°.",
-    "spoken": "Wherever C goes, the angles add up to one hundred and eighty degrees."
-  },
-  {
-    "id": "vo068",
-    "line": "These two angles are adjacent.",
-    "spoken": "These two angles are adjacent."
-  },
-  {
-    "id": "vo069",
-    "line": "Tap the arm they share.",
-    "spoken": "Tap the arm they share."
-  },
-  {
-    "id": "vo070",
-    "line": "OA belongs to one angle only. Tap the shared arm.",
-    "spoken": "O A belongs to one angle only. Tap the shared arm."
-  },
-  {
-    "id": "vo071",
-    "line": "OB belongs to one angle only. Tap the shared arm.",
-    "spoken": "O B belongs to one angle only. Tap the shared arm."
-  },
-  {
-    "id": "vo072",
-    "line": "Now tap the two non-common arms.",
-    "spoken": "Now tap the two non-common arms."
-  },
-  {
-    "id": "vo073",
-    "line": "OC is shared. Tap the two outer arms.",
-    "spoken": "O C is shared. Tap the two outer arms."
-  },
-  {
-    "id": "vo074",
-    "line": "Their non-common arms form a straight line.",
-    "spoken": "Their non-common arms form a straight line."
-  },
-  {
-    "id": "vo075",
-    "line": "This is a linear pair.",
-    "spoken": "This is a linear pair."
-  },
-  {
-    "id": "vo076",
-    "line": "If a ray stands on a line, the two angles add up to 180°.",
-    "spoken": "If a ray stands on a line, the two angles add up to one hundred and eighty degrees."
-  },
-  {
-    "id": "vo077",
-    "line": "Which pair forms a linear pair?",
-    "spoken": "Which pair forms a linear pair?"
-  },
-  {
-    "id": "vo078",
-    "line": "Adjacent — but 80° + 50° is not 180°.",
-    "spoken": "Adjacent. But eighty degrees plus fifty degrees is not one hundred and eighty degrees."
-  },
-  {
-    "id": "vo079",
-    "line": "They total 180°, but they are not adjacent.",
-    "spoken": "They total one hundred and eighty degrees, but they are not adjacent."
-  },
-  {
-    "id": "vo080",
-    "line": "Adjacent, and the outside arms form a line.",
-    "spoken": "Adjacent, and the outside arms form a line."
-  },
-  {
-    "id": "vo081",
-    "line": "A linear pair totals 180°.",
-    "spoken": "A linear pair totals one hundred and eighty degrees."
-  },
-  {
-    "id": "vo082",
-    "line": "What must the missing angle be?",
-    "spoken": "What must the missing angle be?"
-  },
-  {
-    "id": "vo083",
-    "line": "That is the known angle. What adds to 128° to make 180°?",
-    "spoken": "That is the known angle. What adds to one hundred and twenty-eight degrees, to make one hundred and eighty degrees?"
-  },
-  {
-    "id": "vo084",
-    "line": "Check: 128° + 62° = 190°, not 180°.",
-    "spoken": "Check: one hundred and twenty-eight degrees plus sixty-two degrees equals one hundred and ninety degrees, not one hundred and eighty."
+    "id": "vo211",
+    "line": "One angle is 128°; what is the other angle?",
+    "spoken": "One angle is one hundred and twenty-eight degrees, what is the other angle?"
   },
   {
     "id": "vo085",
@@ -425,74 +310,274 @@
     "spoken": "One hundred and twenty-eight degrees plus fifty-two degrees equals one hundred and eighty degrees."
   },
   {
-    "id": "vo086",
-    "line": "Drag A so ∠1 and ∠2 form a linear pair.",
-    "spoken": "Drag A so angle one and angle two form a linear pair."
+    "id": "vo212",
+    "line": "Now reverse the relationship.",
+    "spoken": "Now reverse the relationship."
   },
   {
-    "id": "vo087",
-    "line": "Do the non-common arms OA and OB form a straight line?",
-    "spoken": "Do the non-common arms, O A and O B, form a straight line?"
+    "id": "vo213",
+    "line": "Make the adjacent angles add to 180°.",
+    "spoken": "Make the adjacent angles add to one hundred and eighty degrees."
   },
   {
-    "id": "vo088",
-    "line": "Line OA up with the dashed extension of OB.",
-    "spoken": "Line O A up with the dashed extension of O B."
+    "id": "vo214",
+    "line": "What happens to their non-common arms?",
+    "spoken": "What happens to their non-common arms?"
   },
   {
-    "id": "vo089",
-    "line": "The non-common arms now form one straight line.",
-    "spoken": "The non-common arms now form one straight line."
+    "id": "vo215",
+    "line": "If adjacent angles add to 180°, their non-common arms form a line.",
+    "spoken": "If adjacent angles add to one hundred and eighty degrees, their non-common arms form a line."
   },
   {
-    "id": "vo090",
-    "line": "Drag A until the total is 180°.",
-    "spoken": "Drag A until the total is one hundred and eighty degrees."
+    "id": "vo216",
+    "line": "What happens when a whole line crosses another line?",
+    "spoken": "What happens when a whole line crosses another line?"
   },
   {
-    "id": "vo091",
-    "line": "Look at the outside arms.",
-    "spoken": "Look at the outside arms."
+    "id": "vo217",
+    "line": "How many angles can you see?",
+    "spoken": "How many angles can you see?"
   },
   {
-    "id": "vo092",
-    "line": "Total 180° — the outside arms form a straight line.",
-    "spoken": "Total one hundred and eighty degrees. The outside arms form a straight line."
+    "id": "vo218",
+    "line": "Four angles are formed.",
+    "spoken": "Four angles are formed."
   },
   {
-    "id": "vo093",
-    "line": "If adjacent angles total 180°, what follows?",
-    "spoken": "If adjacent angles total one hundred and eighty degrees, what follows?"
+    "id": "vo219",
+    "line": "Which angle is opposite ∠1?",
+    "spoken": "Which angle is opposite angle one?"
   },
   {
-    "id": "vo094",
-    "line": "OC points away from the line. Look only at the outside arms.",
-    "spoken": "O C points away from the line. Look only at the outside arms."
+    "id": "vo220",
+    "line": "∠3 lies opposite ∠1.",
+    "spoken": "Angle three lies opposite angle one."
   },
   {
-    "id": "vo095",
-    "line": "So the rule also works in reverse.",
-    "spoken": "So the rule also works in reverse."
+    "id": "vo221",
+    "line": "Which angle is opposite ∠2?",
+    "spoken": "Which angle is opposite angle two?"
   },
   {
-    "id": "vo096",
-    "line": "Now let another line cross it.",
-    "spoken": "Now let another line cross it."
+    "id": "vo222",
+    "line": "∠4 lies opposite ∠2.",
+    "spoken": "Angle four lies opposite angle two."
   },
   {
-    "id": "vo097",
-    "line": "Extend the ray through O.",
-    "spoken": "Extend the ray through O."
+    "id": "vo223",
+    "line": "These pairs are called vertically opposite angles.",
+    "spoken": "These pairs are called vertically opposite angles."
   },
   {
-    "id": "vo098",
-    "line": "Lines AB and CD intersect at O.",
-    "spoken": "Lines A B and C D intersect at O."
+    "id": "vo224",
+    "line": "Rotate one line and watch ∠1 and ∠3.",
+    "spoken": "Rotate one line and watch angle one and angle three."
   },
   {
-    "id": "vo099",
-    "line": "Tap the angle opposite ∠1, then Check.",
-    "spoken": "Tap the angle opposite angle one, then check."
+    "id": "vo225",
+    "line": "Their measures change together.",
+    "spoken": "Their measures change together."
+  },
+  {
+    "id": "vo226",
+    "line": "What stays the same about ∠1 and ∠3?",
+    "spoken": "What stays the same about angle one and angle three?"
+  },
+  {
+    "id": "vo227",
+    "line": "Measuring suggests that opposite angles are equal.",
+    "spoken": "Measuring suggests that opposite angles are equal."
+  },
+  {
+    "id": "vo228",
+    "line": "Can we prove that ∠1 = ∠3?",
+    "spoken": "Can we prove that angle one, equals angle three?"
+  },
+  {
+    "id": "vo114",
+    "line": "∠1 and ∠2 form a linear pair.",
+    "spoken": "Angle one and angle two form a linear pair."
+  },
+  {
+    "id": "vo229",
+    "line": "Therefore, ∠1 + ∠2 = 180°.",
+    "spoken": "Therefore, angle one plus angle two, equals one hundred and eighty degrees."
+  },
+  {
+    "id": "vo230",
+    "line": "∠2 and ∠3 also form a linear pair.",
+    "spoken": "Angle two and angle three also form a linear pair."
+  },
+  {
+    "id": "vo231",
+    "line": "Therefore, ∠2 + ∠3 = 180°.",
+    "spoken": "Therefore, angle two plus angle three, equals one hundred and eighty degrees."
+  },
+  {
+    "id": "vo232",
+    "line": "Both expressions are equal to 180°.",
+    "spoken": "Both expressions are equal to one hundred and eighty degrees."
+  },
+  {
+    "id": "vo125",
+    "line": "So ∠1 + ∠2 = ∠2 + ∠3.",
+    "spoken": "So, angle one plus angle two, equals angle two plus angle three."
+  },
+  {
+    "id": "vo233",
+    "line": "Subtract the same ∠2 from both sides.",
+    "spoken": "Subtract the same angle two from both sides."
+  },
+  {
+    "id": "vo234",
+    "line": "We are left with ∠1 = ∠3.",
+    "spoken": "We are left with angle one, equals angle three."
+  },
+  {
+    "id": "vo235",
+    "line": "Can you prove that ∠2 = ∠4?",
+    "spoken": "Can you prove that angle two, equals angle four?"
+  },
+  {
+    "id": "vo236",
+    "line": "Which angle forms a linear pair with both ∠2 and ∠4?",
+    "spoken": "Which angle forms a linear pair with both angle two and angle four?"
+  },
+  {
+    "id": "vo237",
+    "line": "That is one of the two angles we are comparing. Look between ∠2 and ∠4.",
+    "spoken": "That is one of the two angles we are comparing. Look between angle two and angle four."
+  },
+  {
+    "id": "vo238",
+    "line": "∠1 sits next to both ∠2 and ∠4.",
+    "spoken": "Angle one sits next to both angle two and angle four."
+  },
+  {
+    "id": "vo239",
+    "line": "∠3 works too — we will use ∠1, which also sits next to both.",
+    "spoken": "Angle three works too, we will use angle one, which also sits next to both."
+  },
+  {
+    "id": "vo240",
+    "line": "∠1 + ∠2 = 180°.",
+    "spoken": "Angle one plus angle two, equals one hundred and eighty degrees."
+  },
+  {
+    "id": "vo241",
+    "line": "∠1 + ∠4 = 180°.",
+    "spoken": "Angle one plus angle four, equals one hundred and eighty degrees."
+  },
+  {
+    "id": "vo242",
+    "line": "Subtract ∠1 from both sides.",
+    "spoken": "Subtract angle one from both sides."
+  },
+  {
+    "id": "vo243",
+    "line": "Therefore, ∠2 = ∠4.",
+    "spoken": "Therefore, angle two, equals angle four."
+  },
+  {
+    "id": "vo244",
+    "line": "When two lines intersect, vertically opposite angles are equal.",
+    "spoken": "When two lines intersect, vertically opposite angles are equal."
+  },
+  {
+    "id": "vo245",
+    "line": "If ∠1 is 67°, what is ∠3?",
+    "spoken": "If angle one is sixty-seven degrees, what is angle three?"
+  },
+  {
+    "id": "vo246",
+    "line": "113° is the angle next to ∠1. ∠3 sits directly across from it.",
+    "spoken": "One hundred and thirteen degrees is the angle next to angle one. angle three sits directly across from it."
+  },
+  {
+    "id": "vo247",
+    "line": "∠3 sits directly across from ∠1 — opposite angles are equal.",
+    "spoken": "Angle three sits directly across from angle one, opposite angles are equal."
+  },
+  {
+    "id": "vo248",
+    "line": "∠3 is opposite ∠1, so ∠3 = 67°.",
+    "spoken": "Angle three is opposite angle one, so angle three, equals sixty-seven degrees."
+  },
+  {
+    "id": "vo249",
+    "line": "What is ∠2 if it forms a linear pair with 67°?",
+    "spoken": "What is angle two if it forms a linear pair with sixty-seven degrees?"
+  },
+  {
+    "id": "vo250",
+    "line": "67° is ∠1 itself. Together ∠1 and ∠2 must make 180°.",
+    "spoken": "Sixty-seven degrees is angle one itself. Together angle one and angle two must make one hundred and eighty degrees."
+  },
+  {
+    "id": "vo251",
+    "line": "67° + 113° = 180°, so ∠2 = 113°.",
+    "spoken": "Sixty-seven degrees plus one hundred and thirteen degrees, equals one hundred and eighty degrees, so angle two, equals one hundred and thirteen degrees."
+  },
+  {
+    "id": "vo252",
+    "line": "What is ∠4 now?",
+    "spoken": "What is angle four now?"
+  },
+  {
+    "id": "vo253",
+    "line": "67° belongs to the other opposite pair. ∠4 sits across from ∠2.",
+    "spoken": "Sixty-seven degrees belongs to the other opposite pair. angle four sits across from angle two."
+  },
+  {
+    "id": "vo254",
+    "line": "∠4 sits directly across from ∠2 — opposite angles are equal.",
+    "spoken": "Angle four sits directly across from angle two, opposite angles are equal."
+  },
+  {
+    "id": "vo255",
+    "line": "∠4 is opposite ∠2, so ∠4 = 113°.",
+    "spoken": "Angle four is opposite angle two, so angle four, equals one hundred and thirteen degrees."
+  },
+  {
+    "id": "vo256",
+    "line": "Both pairs total 180°; which pair can use the converse?",
+    "spoken": "Both pairs total one hundred and eighty degrees, which pair can use the converse?"
+  },
+  {
+    "id": "vo266",
+    "line": "Look closely at the second pair — do its angles share a vertex and an arm?",
+    "spoken": "Look closely at the second pair, do its angles share a vertex and an arm?"
+  },
+  {
+    "id": "vo267",
+    "line": "Why does only the first pair meet the converse conditions?",
+    "spoken": "Why does only the first pair meet the converse conditions?"
+  },
+  {
+    "id": "vo259",
+    "line": "Adding to 180° is not enough — the angles must also be adjacent.",
+    "spoken": "Adding to one hundred and eighty degrees is not enough, the angles must also be adjacent."
+  },
+  {
+    "id": "vo260",
+    "line": "The calibration system is ready for the asteroid mission.",
+    "spoken": "The calibration system is ready for the asteroid mission."
+  },
+  {
+    "id": "vo261",
+    "line": "Check: 128° + 42° = 170° — the pair must make 180°.",
+    "spoken": "Check: one hundred and twenty-eight degrees plus forty-two degrees, equals one hundred and seventy degrees, the pair must make one hundred and eighty degrees."
+  },
+  {
+    "id": "vo262",
+    "line": "Check: 128° + 62° = 190° — the pair must make 180°.",
+    "spoken": "Check: one hundred and twenty-eight degrees plus sixty-two degrees, equals one hundred and ninety degrees, the pair must make one hundred and eighty degrees."
+  },
+  {
+    "id": "vo263",
+    "line": "67° + 23° = 90° — a linear pair makes 180°.",
+    "spoken": "Sixty-seven degrees plus twenty-three degrees, equals ninety degrees, a linear pair makes one hundred and eighty degrees."
   },
   {
     "id": "vo100",
@@ -505,16 +590,6 @@
     "spoken": "Angle four shares an arm with angle one. Look across the vertex."
   },
   {
-    "id": "vo102",
-    "line": "∠1 and ∠3 sit directly opposite.",
-    "spoken": "Angle one and angle three sit directly opposite."
-  },
-  {
-    "id": "vo103",
-    "line": "Now tap the angle opposite ∠2.",
-    "spoken": "Now tap the angle opposite angle two."
-  },
-  {
     "id": "vo104",
     "line": "∠1 shares an arm with ∠2. Look straight across O.",
     "spoken": "Angle one shares an arm with angle two. Look straight across O."
@@ -523,285 +598,5 @@
     "id": "vo105",
     "line": "∠3 shares an arm with ∠2. Look straight across O.",
     "spoken": "Angle three shares an arm with angle two. Look straight across O."
-  },
-  {
-    "id": "vo106",
-    "line": "Two pairs of vertically opposite angles.",
-    "spoken": "Two pairs of vertically opposite angles."
-  },
-  {
-    "id": "vo107",
-    "line": "Rotate CD. Compare opposite angles.",
-    "spoken": "Rotate C D. Compare opposite angles."
-  },
-  {
-    "id": "vo108",
-    "line": "The angles change...",
-    "spoken": "The angles change..."
-  },
-  {
-    "id": "vo109",
-    "line": "...but opposite angles stay equal.",
-    "spoken": "...but opposite angles stay equal."
-  },
-  {
-    "id": "vo110",
-    "line": "Can we show ∠1 = ∠3 without measuring?",
-    "spoken": "Can we show angle one equals angle three, without measuring?"
-  },
-  {
-    "id": "vo111",
-    "line": "Tap the two angles we want to compare.",
-    "spoken": "Tap the two angles we want to compare."
-  },
-  {
-    "id": "vo112",
-    "line": "We want ∠1 and the angle opposite it.",
-    "spoken": "We want angle one, and the angle opposite it."
-  },
-  {
-    "id": "vo113",
-    "line": "Goal: prove ∠1 = ∠3 with reasons, not a protractor.",
-    "spoken": "Goal: prove angle one equals angle three, with reasons, not a protractor."
-  },
-  {
-    "id": "vo114",
-    "line": "∠1 and ∠2 form a linear pair.",
-    "spoken": "Angle one and angle two form a linear pair."
-  },
-  {
-    "id": "vo115",
-    "line": "Choose the total, then the reason.",
-    "spoken": "Choose the total, then the reason."
-  },
-  {
-    "id": "vo116",
-    "line": "90° is a right angle. These two fill a straight line.",
-    "spoken": "Ninety degrees is a right angle. These two fill a straight line."
-  },
-  {
-    "id": "vo117",
-    "line": "360° is a full turn. These two fill only a straight line.",
-    "spoken": "Three hundred and sixty degrees is a full turn. These two fill only a straight line."
-  },
-  {
-    "id": "vo118",
-    "line": "They are next to each other, not opposite.",
-    "spoken": "They are next to each other, not opposite."
-  },
-  {
-    "id": "vo119",
-    "line": "A proof cannot rely on measuring.",
-    "spoken": "A proof cannot rely on measuring."
-  },
-  {
-    "id": "vo120",
-    "line": "∠1 + ∠2 = 180°, a linear pair.",
-    "spoken": "Angle one plus angle two equals one hundred and eighty degrees. A linear pair."
-  },
-  {
-    "id": "vo121",
-    "line": "∠2 and ∠3 form a linear pair.",
-    "spoken": "Angle two and angle three form a linear pair."
-  },
-  {
-    "id": "vo122",
-    "line": "Notice: both totals are 180°.",
-    "spoken": "Notice: both totals are one hundred and eighty degrees."
-  },
-  {
-    "id": "vo123",
-    "line": "Tap the two equal totals.",
-    "spoken": "Tap the two equal totals."
-  },
-  {
-    "id": "vo124",
-    "line": "Both expressions equal the same value.",
-    "spoken": "Both expressions equal the same value."
-  },
-  {
-    "id": "vo125",
-    "line": "So ∠1 + ∠2 = ∠2 + ∠3.",
-    "spoken": "So, angle one plus angle two, equals angle two plus angle three."
-  },
-  {
-    "id": "vo126",
-    "line": "The same ∠2 appears on both sides.",
-    "spoken": "The same angle two appears on both sides."
-  },
-  {
-    "id": "vo127",
-    "line": "Tap ∠2 on each side.",
-    "spoken": "Tap angle two on each side."
-  },
-  {
-    "id": "vo128",
-    "line": "That angle is on only one side.",
-    "spoken": "That angle is on only one side."
-  },
-  {
-    "id": "vo129",
-    "line": "Subtract it from both sides.",
-    "spoken": "Subtract it from both sides."
-  },
-  {
-    "id": "vo130",
-    "line": "∠1 = ∠3 — proved without measuring.",
-    "spoken": "Angle one equals angle three. Proved, without measuring."
-  },
-  {
-    "id": "vo131",
-    "line": "Now show ∠2 = ∠4.",
-    "spoken": "Now show that angle two equals angle four."
-  },
-  {
-    "id": "vo132",
-    "line": "Which angle pairs with both ∠2 and ∠4?",
-    "spoken": "Which angle pairs with both angle two and angle four?"
-  },
-  {
-    "id": "vo133",
-    "line": "Both are true — but to cancel, use the same angle in both.",
-    "spoken": "Both are true. But to cancel, use the same angle in both."
-  },
-  {
-    "id": "vo134",
-    "line": "Both are 180°, so ∠2 + ∠1 = ∠4 + ∠1.",
-    "spoken": "Both are one hundred and eighty degrees. So, angle two plus angle one, equals angle four plus angle one."
-  },
-  {
-    "id": "vo135",
-    "line": "Both are 180°, so ∠2 + ∠3 = ∠4 + ∠3.",
-    "spoken": "Both are one hundred and eighty degrees. So, angle two plus angle three, equals angle four plus angle three."
-  },
-  {
-    "id": "vo136",
-    "line": "Same reasoning, different pair: ∠2 = ∠4.",
-    "spoken": "Same reasoning, different pair: angle two equals angle four."
-  },
-  {
-    "id": "vo137",
-    "line": "Tap an angle to see its opposite pair.",
-    "spoken": "Tap an angle to see its opposite pair."
-  },
-  {
-    "id": "vo138",
-    "line": "Vertically opposite angles are always equal.",
-    "spoken": "Vertically opposite angles are always equal."
-  },
-  {
-    "id": "vo139",
-    "line": "∠1 is 67°. Find the other three angles.",
-    "spoken": "Angle one is sixty-seven degrees. Find the other three angles."
-  },
-  {
-    "id": "vo140",
-    "line": "Choose each measure and its reason.",
-    "spoken": "Choose each measure and its reason."
-  },
-  {
-    "id": "vo141",
-    "line": "∠1 and ∠2 are a linear pair — they make 180°.",
-    "spoken": "Angle one and angle two are a linear pair. They make one hundred and eighty degrees."
-  },
-  {
-    "id": "vo142",
-    "line": "∠2 is next to ∠1, not opposite it.",
-    "spoken": "Angle two is next to angle one, not opposite it."
-  },
-  {
-    "id": "vo143",
-    "line": "∠3 sits directly across the vertex from ∠1.",
-    "spoken": "Angle three sits directly across the vertex from angle one."
-  },
-  {
-    "id": "vo144",
-    "line": "∠3 is across the vertex from ∠1.",
-    "spoken": "Angle three is across the vertex from angle one."
-  },
-  {
-    "id": "vo145",
-    "line": "∠4 and ∠1 are a linear pair along line CD.",
-    "spoken": "Angle four and angle one are a linear pair, along line C D."
-  },
-  {
-    "id": "vo146",
-    "line": "Opposite angles are equal: ∠3 = 67°, ∠4 = ∠2.",
-    "spoken": "Opposite angles are equal: angle three equals sixty-seven degrees, and angle four equals angle two."
-  },
-  {
-    "id": "vo147",
-    "line": "Linear pairs total 180°: 67° + 113° = 180°.",
-    "spoken": "Linear pairs total one hundred and eighty degrees: sixty-seven degrees plus one hundred and thirteen degrees equals one hundred and eighty degrees."
-  },
-  {
-    "id": "vo148",
-    "line": "Which angle is vertically opposite to ∠1?",
-    "spoken": "Which angle is vertically opposite to angle one?"
-  },
-  {
-    "id": "vo149",
-    "line": "Every angle is 90° — so don’t use the number.",
-    "spoken": "Every angle is ninety degrees, so don’t use the number."
-  },
-  {
-    "id": "vo150",
-    "line": "Look across the vertex, then Check.",
-    "spoken": "Look across the vertex, then check."
-  },
-  {
-    "id": "vo151",
-    "line": "∠2 shares an arm with ∠1. Opposite angles share only the vertex.",
-    "spoken": "Angle two shares an arm with angle one. Opposite angles share only the vertex."
-  },
-  {
-    "id": "vo152",
-    "line": "∠4 shares an arm with ∠1. Opposite angles share only the vertex.",
-    "spoken": "Angle four shares an arm with angle one. Opposite angles share only the vertex."
-  },
-  {
-    "id": "vo153",
-    "line": "Yes — ∠3 sits directly across from ∠1.",
-    "spoken": "Yes! Angle three sits directly across from angle one."
-  },
-  {
-    "id": "vo154",
-    "line": "Which pair's non-common arms must form a line?",
-    "spoken": "Which pair's non-common arms must form a line?"
-  },
-  {
-    "id": "vo155",
-    "line": "Pair B totals 180° too — but it is not adjacent.",
-    "spoken": "Pair B totals one hundred and eighty degrees too. But it is not adjacent."
-  },
-  {
-    "id": "vo156",
-    "line": "Adjacent and 180° — so the outer arms form a line.",
-    "spoken": "Adjacent, and one hundred and eighty degrees. So the outer arms form a line."
-  },
-  {
-    "id": "vo157",
-    "line": "You can find angles without measuring them.",
-    "spoken": "You can find angles without measuring them."
-  },
-  {
-    "id": "vo158",
-    "line": "Tap each relationship to replay it.",
-    "spoken": "Tap each relationship to replay it."
-  },
-  {
-    "id": "vo159",
-    "line": "Vertically opposite angles are equal.",
-    "spoken": "Vertically opposite angles are equal."
-  },
-  {
-    "id": "vo160",
-    "line": "Adjacent + 180° → outer arms form a line.",
-    "spoken": "Adjacent, plus one hundred and eighty degrees, means the outer arms form a line."
-  },
-  {
-    "id": "vo161",
-    "line": "You built it, explored it, and proved it.",
-    "spoken": "You built it, explored it, and proved it."
   }
 ]

@@ -37,10 +37,10 @@
     duration(text) { const c = enabled && clip(plain(text)); return c ? c.sec / RATE : null; },
 
     /** say a line; resolves when the clip ends (or immediately/after reading time when silent) */
-    speak(text) {
+    speak(text, { force = false } = {}) {
       const p = plain(text);
-      if (cur && cur.p === p) return cur.promise;            // already saying it: join, don't restart
-      if (!cur && last === p) return Promise.resolve();       // just said it: don't repeat
+      if (!force && cur && cur.p === p) return cur.promise;   // already saying it: join, don't restart
+      if (!force && !cur && last === p) return Promise.resolve();   // just said it: don't repeat (unless replayed)
       Voice.stop(false);                                       // a new line stops the previous voice
       const c = enabled ? clip(p) : null;
       if (!c) { last = p; return Tween.sleep(estimate(p)); }

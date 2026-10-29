@@ -89,5 +89,5 @@
 
   window.MOTION = MOTION;
   window.Ease = Ease;
-  window.Tween = { tween, animate, sleep, onFrame };
+  window.Tween = { tween, animate, sleep, onFrame, TS };
 })();

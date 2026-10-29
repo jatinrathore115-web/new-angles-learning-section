@@ -6,16 +6,16 @@
 (function () {
   const NS = 'http://www.w3.org/2000/svg';
   const COL = {
-    cyan: { core: '#6af4ff', glow: '#14c8ff', fill: 'rgba(45,226,255,.20)' },
+    cyan: { core: '#35E7FF', glow: '#00CFFF', fill: 'rgba(53,231,255,.18)' },
     blue: { core: '#5aaeff', glow: '#2f7bff', fill: 'rgba(47,123,255,.22)' },
-    gold: { core: '#ffe23a', glow: '#ffae00', fill: 'rgba(255,212,38,.22)' },
-    mag: { core: '#ff52e8', glow: '#ff1fd0', fill: 'rgba(255,47,216,.26)' },
-    violet: { core: '#b98aff', glow: '#8c4dff', fill: 'rgba(155,92,255,.26)' },
-    mint: { core: '#4dffd2', glow: '#10e6ad', fill: 'rgba(52,245,197,.22)' },
+    gold: { core: '#FFD84A', glow: '#FFB800', fill: 'rgba(255,216,74,.20)' },
+    mag: { core: '#FF48D7', glow: '#FF1FCB', fill: 'rgba(255,72,215,.22)' },
+    violet: { core: '#A66CFF', glow: '#8A4DFF', fill: 'rgba(166,108,255,.24)' },
+    mint: { core: '#38F2B2', glow: '#10D995', fill: 'rgba(56,242,178,.20)' },
     orange: { core: '#ffb347', glow: '#ff8a00', fill: 'rgba(255,154,31,.24)' },
-    coral: { core: '#ff8090', glow: '#ff4d63', fill: 'rgba(255,107,125,.25)' },
-    white: { core: '#ffffff', glow: '#8fd8ff', fill: 'rgba(255,255,255,.14)' },
-    dim: { core: '#6c86c4', glow: '#3a5aa0', fill: 'rgba(90,120,200,.12)' },
+    coral: { core: '#FF667A', glow: '#FF3D57', fill: 'rgba(255,102,122,.24)' },
+    white: { core: '#F5F8FF', glow: '#8FD8FF', fill: 'rgba(245,248,255,.12)' },
+    dim: { core: '#7088B8', glow: '#3A5AA0', fill: 'rgba(156,182,216,.10)' },
   };
 
   function el(tag, attrs, parent) {
@@ -57,7 +57,7 @@
   /* -------------------------------------------------------------- vertex */
   class Vertex extends Obj {
     constructor(scene, id, props) {
-      super(scene, id, 'vertex', { x: 0, y: 0, op: 0, label: '', labelOp: 1, labelAngle: null, labelDist: 34, color: 'cyan', size: 1.2, ring: 0 }, props);
+      super(scene, id, 'vertex', { x: 0, y: 0, op: 0, label: '', labelOp: 1, labelAngle: null, labelDist: 34, color: 'cyan', size: 1.2, ring: 0, dim: 0 }, props);
       this.halo = this.mk('vtx', 'circle', { fill: 'none' });
       this.ringEl = this.mk('fxb', 'circle', { fill: 'none', 'stroke-width': 2.5, 'stroke-dasharray': '6 8' });
       this.core = this.mk('vtx', 'circle', { fill: '#fff' });
@@ -67,12 +67,14 @@
     render() {
       const s = this.st, c = C(s.color);
       const k = 1 + s.hl * 0.9 + s.hov * 0.3;
+      const op = s.op * (1 - s.dim * 0.55);
       A(this.halo, 'cx', f2(s.x)); A(this.halo, 'cy', f2(s.y));
       A(this.halo, 'r', f2(13 * k * s.size));
       A(this.halo, 'stroke', c.glow); A(this.halo, 'stroke-width', f2(3 + s.hl * 3));
-      A(this.halo, 'opacity', f2(s.op * (0.45 + s.hl * 0.5)));
+      A(this.halo, 'opacity', f2(op * (0.45 + s.hl * 0.5)));
       A(this.core, 'cx', f2(s.x)); A(this.core, 'cy', f2(s.y));
-      A(this.core, 'r', f2(6.5 * (1 + s.hl * 0.35) * s.size)); A(this.core, 'opacity', f2(s.op));
+      A(this.core, 'r', f2(6.5 * (1 + s.hl * 0.35) * s.size)); A(this.core, 'opacity', f2(op));
+      A(this.core, 'fill', s.color === 'gold' ? '#ffe23a' : '#fff');
       A(this.ringEl, 'cx', f2(s.x)); A(this.ringEl, 'cy', f2(s.y)); A(this.ringEl, 'r', '30');
       A(this.ringEl, 'stroke', '#ffd426'); A(this.ringEl, 'opacity', f2(s.ring * s.op));
       A(this.ringEl, 'stroke-dashoffset', f2((performance.now() / 40) % 14));
@@ -83,7 +85,7 @@
       const p = G.at(s, this._la, s.labelDist);
       A(this.lbl, 'x', f2(p.x)); A(this.lbl, 'y', f2(p.y));
       T(this.lbl, s.label || '');
-      A(this.lbl, 'opacity', f2(s.op * s.labelOp));
+      A(this.lbl, 'opacity', f2(op * s.labelOp));
       if (this.hitEl) { A(this.hitEl, 'cx', f2(s.x)); A(this.hitEl, 'cy', f2(s.y)); }
     }
   }
@@ -114,7 +116,7 @@
       }
       A(this.core, 'stroke', c.core); A(this.core, 'stroke-width', f2(w)); A(this.core, 'opacity', f2(vis));
       A(this.core, 'stroke-dasharray', s.dash ? '10 12' : 'none');
-      A(this.glow, 'stroke', c.glow); A(this.glow, 'stroke-width', f2(16 + s.hl * 14)); A(this.glow, 'opacity', f2(vis * (0.2 + s.hl * 0.25)));
+      A(this.glow, 'stroke', c.glow); A(this.glow, 'stroke-width', f2(12 + s.hl * 12)); A(this.glow, 'opacity', f2(vis * (0.14 + s.hl * 0.26)));
       const af = s.arrow * G.clamp((s.prog - 0.9) / 0.1, 0, 1);
       if (af > 0) {
         const p1 = G.at(tip, s.angle + 152, 23), p2 = G.at(tip, s.angle - 152, 23);
@@ -196,8 +198,10 @@
       super(scene, id, 'arc', {
         at: 'O', from: 0, to: 90, r: 70, prog: 0, color: 'mag', label: 'auto', labelOp: 0, labelGap: 40,
         minor: false, rightMark: true, fillOp: 1, sub: '', subColor: '#ffd426', ring: 0, labelColor: '#fff', dim: 0,
+        val: '', valOp: 0, valGap: 44, valColor: '#fff',
       }, props);
       this.fill = this.mk('arcf', 'path', {});
+      this.vl = this.mk('lbl', 'text', { class: 'lbl-val', 'text-anchor': 'middle', 'dominant-baseline': 'central' });
       this.glow = this.mk('arcs', 'path', { fill: 'none', 'stroke-linecap': 'round' });
       this.core = this.mk('arcs', 'path', { fill: 'none', 'stroke-linecap': 'round' });
       this.ringEl = this.mk('arcs', 'path', { fill: 'none', 'stroke-width': 3, 'stroke-dasharray': '7 9', 'stroke-linecap': 'round' });
@@ -240,7 +244,7 @@
       }
       A(this.core, 'd', dPath || 'M0 0'); A(this.glow, 'd', dPath || 'M0 0'); A(this.fill, 'd', fPath || 'M0 0');
       A(this.core, 'stroke', c.core); A(this.core, 'stroke-width', f2(3.5 + s.hl * 3 + s.hov * 1.5)); A(this.core, 'opacity', f2(vis));
-      A(this.glow, 'stroke', c.glow); A(this.glow, 'stroke-width', f2(12 + s.hl * 12)); A(this.glow, 'opacity', f2(vis * (0.22 + s.hl * 0.3)));
+      A(this.glow, 'stroke', c.glow); A(this.glow, 'stroke-width', f2(10 + s.hl * 10)); A(this.glow, 'opacity', f2(vis * (0.16 + s.hl * 0.3)));
       A(this.fill, 'fill', c.fill); A(this.fill, 'opacity', f2(vis * s.fillOp * (1 + s.hl * 1.2 + s.hov * 0.6)));
       // focus ring (dashed concentric arc)
       A(this.ringEl, 'd', G.arcPath(O, s.r + 16, a0, sw, false) || 'M0 0');
@@ -251,7 +255,8 @@
       const txt = s.label === 'auto' ? `${Math.round(sw)}°` : (s.label || '');
       const lop = s.op * s.labelOp * G.clamp((s.prog - 0.55) / 0.45, 0, 1);
       A(this.lbl, 'x', f2(lp.x)); A(this.lbl, 'y', f2(lp.y)); T(this.lbl, txt);
-      A(this.lbl, 'opacity', f2(lop * (1 - s.dim * 0.5))); A(this.lbl, 'fill', s.labelColor);
+      // colour as an inline style: the label classes set a CSS fill that would override the attribute
+      A(this.lbl, 'opacity', f2(lop * (1 - s.dim * 0.5))); A(this.lbl, 'style', `fill:${s.labelColor}`);
       A(this.lbl, 'class', s.label === 'auto' || /°/.test(txt) ? 'lbl-ms' : 'lbl-num');
       // classification badge
       if (s.sub) {
@@ -262,6 +267,14 @@
         A(this.bText, 'fill', s.subColor); T(this.bText, s.sub);
       }
       A(this.badge, 'opacity', f2(s.sub ? lop : 0));
+      // second label: the live measure, further out on the same bisector
+      if (s.val) {
+        const vp = G.at(O, a0 + sw / 2, s.r + s.labelGap + s.valGap + (sw < 40 ? (40 - sw) * 1.4 : 0));
+        A(this.vl, 'x', f2(vp.x)); A(this.vl, 'y', f2(vp.y));
+        T(this.vl, s.val === 'auto' ? `${Math.round(sw)}°` : s.val);
+        A(this.vl, 'fill', s.valColor);
+      }
+      A(this.vl, 'opacity', f2(s.val ? s.op * s.valOp * (1 - s.dim * 0.6) * (s.prog > 0.5 ? 1 : 0) : 0));
       if (this.hitEl) A(this.hitEl, 'd', G.arcPath(O, Math.max(s.r * 2.1, 120), a0, sw, true) || 'M0 0');
     }
   }

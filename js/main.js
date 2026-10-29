@@ -12,7 +12,7 @@
 
   // a few slow floating luminance motes (very subtle)
   const motes = document.getElementById('bgMotes');
-  for (let i = 0; i < 16; i++) {
+  for (let i = 0; i < 8; i++) {
     const m = document.createElement('i');
     m.style.left = (80 + Math.random() * 1440) + 'px';
     m.style.top = (300 + Math.random() * 560) + 'px';

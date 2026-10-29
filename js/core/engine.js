@@ -8,13 +8,18 @@
   const STATES = ['ENTER', 'INTRO', 'DEMONSTRATE', 'READY', 'INTERACTING', 'AWAIT_CHECK', 'CORRECT', 'INCORRECT', 'EXPLAIN', 'COMPLETE', 'EXIT'];
   const LIVE = new Set(['READY', 'INTERACTING', 'AWAIT_CHECK', 'INCORRECT', 'COMPLETE']);
 
+  // mission phases: a quiet contextual motif, never extra teaching text
   const CHAPTERS = [
-    { k: 'CHAPTER 01', t: 'BUILDING ANGLES' },
-    { k: 'CHAPTER 02', t: 'ANGLE RELATIONSHIPS' },
-    { k: 'CHAPTER 03', t: 'LINEAR PAIRS' },
-    { k: 'CHAPTER 04', t: 'WHEN LINES INTERSECT' },
-    { k: 'CHAPTER 05', t: 'PROVE IT' },
-    { k: 'CHAPTER 06', t: 'APPLY & RECALL' },
+    { k: 'PHASE 01', t: 'FOUNDATION CALIBRATION' },
+    { k: 'PHASE 02', t: 'ANGLE CLASSIFICATION' },
+    { k: 'PHASE 03', t: 'RELATIONSHIP ANALYSIS' },
+    { k: 'PHASE 04', t: 'ADJACENCY SCAN' },
+    { k: 'PHASE 05', t: 'LINEAR PAIR CALIBRATION' },
+    { k: 'PHASE 06', t: 'CONVERSE TEST' },
+    { k: 'PHASE 07', t: 'INTERSECTION ANALYSIS' },
+    { k: 'PHASE 08', t: 'PROOF SEQUENCE' },
+    { k: 'PHASE 09', t: 'FIELD APPLICATION' },
+    { k: 'PHASE 10', t: 'MISSION READY' },
   ];
 
   const stage = document.getElementById('stage');
@@ -41,12 +46,39 @@
     }
     get st() { return this._state; }
 
-    /** narration line synced with VO; resolves when the voice finishes */
+    /** narration line synced with VO; resolves when the voice and its cues finish.
+        opts.cues = { 'word': fn, 'two rays': fn, 'arm#2': fn } — each fn runs the
+        moment the narrator reaches that word (multi-word phrases match in order,
+        '#n' picks the n-th occurrence), so the narration drives the geometry. */
     async say(text, opts = {}) {
       if (!this.alive) throw ABORT;
-      UI.line(text, { tone: opts.tone || '', dur: Voice.duration(text) });
+      const sc = UI.line(text, { tone: opts.tone || '', dur: Voice.duration(text) });
+      const cues = this.cues(sc, opts.cues);
       await this.$(Voice.speak(text));
+      await this.$(cues);
       await this.wait(opts.after ?? 160);
+    }
+    cues(sc, cues) {
+      if (!cues || !sc) return Promise.resolve();
+      const jobs = [];
+      for (const [k, fn] of Object.entries(cues)) {
+        const [phrase, n] = k.split('#'), nth = +n || 1;
+        const parts = phrase.toLowerCase().split(/\s+/);
+        let idx = -1, count = 0;
+        for (let i = 0; i <= sc.times.length - parts.length; i++) {
+          if (parts.every((p, j) => sc.times[i + j].key === p) && ++count === nth) { idx = i; break; }
+        }
+        if (idx < 0) { console.warn(`[${this.screen.id}] cue "${k}" not in line`); continue; }
+        const delay = Math.max(0, sc.start + sc.times[idx].t * Tween.TS - performance.now());
+        jobs.push(new Promise(res => {
+          const t = setTimeout(() => {
+            if (!this.alive) return res();
+            Promise.resolve().then(fn).catch(() => { }).then(res);
+          }, delay);
+          this.cleanups.push(() => { clearTimeout(t); res(); });
+        }));
+      }
+      return Promise.all(jobs);
     }
     /** narrate and run an animation in sync: the animation starts `delay` ms
         into the line, and the beat ends when both have finished */
@@ -77,6 +109,8 @@
     check(enabled = false) { UI.Dock.setCheck(true, enabled); }
     enableCheck(v = true) { UI.Dock.enableCheck(v); if (v && this._state === 'READY') this.state('AWAIT_CHECK'); }
     waitCheck() {
+      // a CHECK pressed while the previous hint was still being spoken is answered now
+      if (this._checkQueued) { this._checkQueued = false; return this.$(Promise.resolve()); }
       return this.$(new Promise(res => { this._check = () => { this._check = null; res(); }; }));
     }
 
@@ -86,6 +120,13 @@
       UI.Dock.setCheck(false);
       this.engine.markDone(this.screen.id);
       UI.Dock.setNext(true, true);
+    }
+
+    /** a correct prediction flows straight into the screen that explains it */
+    async advance(ms = 650) {
+      this.complete();
+      await this.wait(ms);
+      this.engine.next();
     }
 
     /** subtle idle hint (never changes the problem) */
@@ -123,10 +164,30 @@
 
     init(scene) {
       this.scene = scene;
-      UI.Dock.check.addEventListener('click', () => { if (this.ctx && this.ctx._check) { Sound.play('ui.select'); this.ctx._check(); } });
+      UI.Dock.check.addEventListener('click', () => {
+        const ctx = this.ctx;
+        if (!ctx) return;
+        Sound.play('ui.select');
+        if (ctx._check) ctx._check();
+        // pressed while a wrong-answer hint is still being spoken: keep the press and
+        // answer it as soon as the hint ends (the new feedback line cuts the hint short)
+        else if (ctx.st === 'INCORRECT') { ctx._checkQueued = true; Voice.stop(false); }
+      });
       UI.Dock.next.addEventListener('click', () => this.next());
       UI.Dock.back.addEventListener('click', () => this.go(this.idx - 1, -1));
+      document.getElementById('bReplay').addEventListener('click', () => this.replay());
       this.buildMap();
+    },
+
+    /** replay the narration line on screen: words and voice start again together
+        (one audio element, so a replay simply restarts it — voices never overlap) */
+    replay() {
+      const c = UI.currentLine();
+      if (!c) return;
+      Sound.play('ui.select');
+      Voice.stop(false);
+      UI.restartLine(Voice.duration(c.text));
+      Voice.speak(c.text, { force: true }).catch(() => { });
     },
 
     markDone(id) { this.done.add(id); this.refreshMap(); },
@@ -157,11 +218,12 @@
       this.progress(i);
       stage.classList.toggle('quiet', !!scr.quiet);
 
+      // carried items stay; the rest of the persistent layer fades as the screen begins
+      P.keep(scr.persist || []);
       const chapterChanged = !prevScreen || prevScreen.chapter !== scr.chapter;
-      if (chapterChanged && dir !== 0) {
+      if (chapterChanged && dir > 0) {
         const ch = CHAPTERS[scr.chapter];
         UI.clearLine();
-        if (scr.chapterPrep) scr.chapterPrep(this.scene);
         await UI.chapter(ch.k, ch.t);
       }
       if (token !== this.nav) return;
@@ -197,13 +259,14 @@
       st.classList.add('done');
       st.classList.remove('gone');
       document.getElementById('bStart').setAttribute('aria-label', 'Start the lesson again');
-      Sound.play('chapter.complete');
+      P.keep([]);
+      this.scene.clear(400);
     },
 
     buildMap() {
       const grid = document.getElementById('mapGrid');
       const map = document.getElementById('map');
-      grid.innerHTML = CHAPTERS.map((c, ci) => `<div class="map-col"><h4>${c.t}</h4>${this.screens.map((s, i) => s.chapter === ci ? `<button data-i="${i}"><b>${String(i + 1).padStart(2, '0')}</b>${s.topicShort || s.topic}</button>` : '').join('')}</div>`).join('');
+      grid.innerHTML = CHAPTERS.map((c, ci) => `<div class="map-col"><h4>${c.t}</h4>${this.screens.map((s, i) => s.chapter === ci ? `<button data-i="${i}" title="${(s.title || '').replace(/\*/g, '').replace(/"/g, '&quot;')}"><b>${String(i + 1).padStart(2, '0')}</b>${s.topicShort || s.topic}</button>` : '').join('')}</div>`).join('');
       grid.addEventListener('click', e => {
         const b = e.target.closest('button[data-i]');
         if (!b) return;

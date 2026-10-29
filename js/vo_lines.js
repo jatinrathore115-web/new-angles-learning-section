@@ -21,10 +21,6 @@ const VO_LINES = {
   "vo005",
   3.26
  ],
- "Match each name to its drawing.": [
-  "vo006",
-  2.81
- ],
  "A point has no length — it only marks a position.": [
   "vo007",
   4.85
@@ -41,361 +37,405 @@ const VO_LINES = {
   "vo010",
   4.78
  ],
+ "Match each name to its drawing.": [
+  "vo006",
+  2.81
+ ],
  "All matched — endpoints and arrows tell them apart.": [
   "vo011",
   4.73
  ],
- "Now give this ray a partner.": [
-  "vo012",
-  2.81
- ],
- "Two rays with one common endpoint form an angle.": [
-  "vo013",
-  4.49
- ],
- "The two rays are the arms.": [
-  "vo014",
-  2.66
- ],
- "Their common endpoint, O, is the vertex.": [
-  "vo015",
-  4.01
- ],
- "Name it with the vertex in the middle: ∠AOB.": [
-  "vo016",
-  5.86
- ],
- "Move ray OB.": [
-  "vo017",
-  2.38
- ],
- "Tap the two arms.": [
-  "vo018",
-  2.3
- ],
- "That is the vertex. Tap the two arms.": [
-  "vo019",
-  3.7
- ],
- "Now tap the vertex.": [
-  "vo020",
-  2.3
- ],
- "That is an arm. Tap the shared endpoint.": [
-  "vo021",
-  4.34
- ],
- "OA and OB are the arms; O is the vertex.": [
-  "vo022",
-  4.78
- ],
- "Angles are measured in degrees.": [
-  "vo023",
-  2.74
- ],
- "Drag the arm. Find every type of angle.": [
-  "vo024",
-  4.61
- ],
- "The angle type depends on how far the ray turns.": [
-  "vo025",
-  4.01
- ],
- "Make an obtuse angle.": [
-  "vo026",
-  2.42
- ],
- "Look at the size of the angle again.": [
-  "vo027",
-  2.81
- ],
- "That is exactly a right angle. Open it wider.": [
-  "vo028",
-  4.06
- ],
- "Obtuse lies between the two dashed guides.": [
-  "vo029",
-  3.74
- ],
- "Too wide — obtuse is less than a straight angle.": [
-  "vo030",
-  4.46
- ],
- "Yes — more than 90°, less than 180°.": [
-  "vo031",
-  5.5
- ],
- "What happens if we keep turning?": [
-  "vo032",
-  2.66
- ],
- "Keep turning — past a straight angle.": [
-  "vo033",
-  2.93
- ],
- "Now make a reflex angle.": [
-  "vo034",
-  2.9
- ],
- "That is a straight angle. Keep turning.": [
-  "vo035",
-  3.41
- ],
- "Look at the size again. Reflex is more than a straight angle.": [
-  "vo036",
-  4.73
- ],
- "Exactly — more than 180°, less than a full turn.": [
-  "vo037",
-  4.78
- ],
- "Find each pair's total.": [
-  "vo038",
-  2.62
- ],
- "Add each pair and choose its total.": [
-  "vo039",
-  3.05
- ],
- "180° is a straight angle. Add 35° and 55° again.": [
-  "vo040",
-  7.01
- ],
- "Not quite. Add 35° + 55° carefully.": [
-  "vo041",
-  6.7
- ],
- "A little more. Try 125 + 50, then add 5.": [
-  "vo042",
-  6.38
- ],
- "A little less. Try 125 + 50, then add 5.": [
-  "vo043",
-  8.26
- ],
- "These add to 90° — they are complementary.": [
-  "vo044",
-  4.22
- ],
- "These add to 180° — they are supplementary.": [
-  "vo045",
-  3.98
- ],
- "What if two angles also share a vertex?": [
-  "vo046",
-  3.34
- ],
- "Here is ∠AOB.": [
-  "vo047",
-  3.22
- ],
- "Draw ray OC inside it.": [
-  "vo048",
-  3.14
- ],
- "The two angles share the same vertex.": [
-  "vo049",
-  3.41
- ],
- "They also share one arm.": [
-  "vo050",
-  2.62
- ],
- "Angles like these are adjacent angles.": [
-  "vo051",
-  3.46
- ],
- "Drag C between OA and OB.": [
-  "vo052",
-  4.18
- ],
- "Tap the shared vertex.": [
-  "vo053",
-  3.62
- ],
- "Now tap the common arm.": [
-  "vo054",
-  2.5
- ],
- "OA belongs to only one angle. Which arm do both use?": [
-  "vo055",
-  5.54
- ],
- "OB belongs to only one angle. Which arm do both use?": [
-  "vo056",
-  4.97
- ],
- "Common vertex, common arm, no overlap.": [
-  "vo057",
-  4.42
- ],
- "Which pair is adjacent?": [
-  "vo058",
-  2.57
- ],
- "These overlap. Adjacent angles sit side by side.": [
-  "vo059",
-  5.14
- ],
- "They share a vertex — but do they share an arm?": [
-  "vo060",
-  4.25
- ],
- "Correct — one vertex, one arm, no overlap.": [
-  "vo061",
-  4.73
- ],
- "Move C and watch both angles.": [
-  "vo062",
-  3.82
- ],
- "The two angles change...": [
-  "vo063",
-  2.3
- ],
- "...but their total stays 180°.": [
-  "vo064",
+ "Two rays begin at the same point O.": [
+  "vo162",
   3.53
  ],
- "What stays the same?": [
-  "vo065",
-  2.09
+ "When one ray turns, the two rays form an angle.": [
+  "vo163",
+  4.49
  ],
- "Drag C again — do the two measures really stay the same?": [
-  "vo066",
-  4.61
+ "O is called the vertex, and OA and OB are the arms.": [
+  "vo164",
+  5.45
  ],
- "Wherever C goes, the angles add up to 180°.": [
-  "vo067",
-  5.09
+ "An angle smaller than 90° is acute.": [
+  "vo165",
+  3.94
  ],
- "These two angles are adjacent.": [
-  "vo068",
-  3.02
+ "An angle of 90° is a right angle.": [
+  "vo166",
+  3.62
  ],
- "Tap the arm they share.": [
-  "vo069",
-  2.18
+ "An angle between 90° and 180° is obtuse.": [
+  "vo167",
+  5.69
  ],
- "OA belongs to one angle only. Tap the shared arm.": [
-  "vo070",
-  5.38
- ],
- "OB belongs to one angle only. Tap the shared arm.": [
-  "vo071",
-  5.14
- ],
- "Now tap the two non-common arms.": [
-  "vo072",
-  3.1
- ],
- "OC is shared. Tap the two outer arms.": [
-  "vo073",
+ "An angle of 180° is straight.": [
+  "vo168",
   4.34
  ],
- "Their non-common arms form a straight line.": [
-  "vo074",
-  3.5
+ "An angle between 180° and 360° is reflex.": [
+  "vo169",
+  6.46
  ],
- "This is a linear pair.": [
-  "vo075",
-  2.26
+ "Which angle is obtuse?": [
+  "vo170",
+  2.54
  ],
- "If a ray stands on a line, the two angles add up to 180°.": [
-  "vo076",
-  5.38
+ "45° is less than 90°. Obtuse lies between 90° and 180°.": [
+  "vo171",
+  8.5
  ],
- "Which pair forms a linear pair?": [
-  "vo077",
-  2.98
+ "220° is more than 180°. Obtuse lies between 90° and 180°.": [
+  "vo172",
+  8.66
  ],
- "Adjacent — but 80° + 50° is not 180°.": [
-  "vo078",
-  5.57
+ "125° is more than 90° and less than 180° — obtuse.": [
+  "vo173",
+  7.85
  ],
- "They total 180°, but they are not adjacent.": [
-  "vo079",
-  5.06
+ "Which angle is reflex?": [
+  "vo174",
+  2.5
  ],
- "Adjacent, and the outside arms form a line.": [
-  "vo080",
-  3.89
+ "95° is less than 180°. Reflex is more than a straight angle.": [
+  "vo175",
+  6.58
  ],
- "A linear pair totals 180°.": [
-  "vo081",
+ "180° is exactly straight. Reflex is more than 180°.": [
+  "vo176",
+  7.42
+ ],
+ "230° is between 180° and 360° — reflex.": [
+  "vo177",
+  7.22
+ ],
+ "What is the sum of these angles?": [
+  "vo178",
+  2.57
+ ],
+ "A little more — 35 + 50 is 85, then add 5.": [
+  "vo179",
+  6.53
+ ],
+ "A little less — 35 + 50 is 85, then add 5.": [
+  "vo180",
+  5.86
+ ],
+ "Correct! These two angles add to 90°.": [
+  "vo181",
   4.3
  ],
- "What must the missing angle be?": [
-  "vo082",
-  2.66
+ "Angles whose measures add to 90° are called complementary angles.": [
+  "vo182",
+  5.81
  ],
- "That is the known angle. What adds to 128° to make 180°?": [
-  "vo083",
-  7.7
+ "What about these two?": [
+  "vo183",
+  1.73
  ],
- "Check: 128° + 62° = 190°, not 180°.": [
-  "vo084",
-  8.42
+ "A little more — 125 + 50 is 175, then add 5.": [
+  "vo184",
+  7.78
+ ],
+ "A little less — 125 + 50 is 175, then add 5.": [
+  "vo185",
+  7.73
+ ],
+ "Correct! These two angles add to 180°.": [
+  "vo186",
+  4.22
+ ],
+ "Angles whose measures add to 180° are supplementary.": [
+  "vo187",
+  4.7
+ ],
+ "Let’s look at these two angles.": [
+  "vo188",
+  2.62
+ ],
+ "What if they had the same vertex and a common arm?": [
+  "vo189",
+  3.98
+ ],
+ "Let’s find out.": [
+  "vo190",
+  1.78
+ ],
+ "The two angles share vertex O.": [
+  "vo191",
+  2.81
+ ],
+ "They also share arm OC without overlapping.": [
+  "vo192",
+  3.89
+ ],
+ "These are adjacent angles.": [
+  "vo193",
+  2.57
+ ],
+ "Two angles which share a common arm and vertex without any overlap are called adjacent angles.": [
+  "vo194",
+  7.9
+ ],
+ "Which of these pairs are adjacent angles?": [
+  "vo195",
+  3.53
+ ],
+ "They share a vertex — but no arm. Check whether the two angles share both a vertex and an arm.": [
+  "vo196",
+  7.61
+ ],
+ "They share a vertex and an arm — but one angle covers the other.": [
+  "vo197",
+  5.09
+ ],
+ "Yes — one vertex, one shared arm, no overlap.": [
+  "vo264",
+  5.06
+ ],
+ "What if their non-common arms lie on a straight line?": [
+  "vo199",
+  3.86
+ ],
+ "Drag A till OA and OB lie on a straight line.": [
+  "vo200",
+  5.62
+ ],
+ "The outer arms now make one straight line.": [
+  "vo201",
+  3.58
+ ],
+ "Move the common arm and watch both measures.": [
+  "vo202",
+  4.22
+ ],
+ "One angle grows as the other shrinks.": [
+  "vo203",
+  3.65
+ ],
+ "What stays the same when the common arm moves?": [
+  "vo204",
+  3.82
+ ],
+ "The two adjacent angles always add to 180°.": [
+  "vo205",
+  5.14
+ ],
+ "A ray standing on a line forms a linear pair.": [
+  "vo206",
+  3.89
+ ],
+ "The angles in a linear pair add to 180°.": [
+  "vo207",
+  5.45
+ ],
+ "Which diagram shows a linear pair?": [
+  "vo208",
+  3.17
+ ],
+ "Adjacent, with a common arm — but do the outer arms form one straight line?": [
+  "vo209",
+  6.34
+ ],
+ "Yes — adjacent, and the outer arms form a straight line.": [
+  "vo265",
+  5.33
+ ],
+ "One angle is 128°; what is the other angle?": [
+  "vo211",
+  5.06
  ],
  "128° + 52° = 180°.": [
   "vo085",
   6.38
  ],
- "Drag A so ∠1 and ∠2 form a linear pair.": [
-  "vo086",
-  5.69
+ "Now reverse the relationship.": [
+  "vo212",
+  2.93
  ],
- "Do the non-common arms OA and OB form a straight line?": [
-  "vo087",
-  5.45
+ "Make the adjacent angles add to 180°.": [
+  "vo213",
+  4.66
  ],
- "Line OA up with the dashed extension of OB.": [
-  "vo088",
-  5.14
+ "What happens to their non-common arms?": [
+  "vo214",
+  2.98
  ],
- "The non-common arms now form one straight line.": [
-  "vo089",
-  3.65
+ "If adjacent angles add to 180°, their non-common arms form a line.": [
+  "vo215",
+  6.65
  ],
- "Drag A until the total is 180°.": [
-  "vo090",
-  4.94
+ "What happens when a whole line crosses another line?": [
+  "vo216",
+  4.18
  ],
- "Look at the outside arms.": [
-  "vo091",
-  2.21
+ "How many angles can you see?": [
+  "vo217",
+  2.54
  ],
- "Total 180° — the outside arms form a straight line.": [
-  "vo092",
-  5.33
+ "Four angles are formed.": [
+  "vo218",
+  2.3
  ],
- "If adjacent angles total 180°, what follows?": [
-  "vo093",
-  4.61
+ "Which angle is opposite ∠1?": [
+  "vo219",
+  3.29
  ],
- "OC points away from the line. Look only at the outside arms.": [
-  "vo094",
-  5.21
- ],
- "So the rule also works in reverse.": [
-  "vo095",
-  2.81
- ],
- "Now let another line cross it.": [
-  "vo096",
+ "∠3 lies opposite ∠1.": [
+  "vo220",
   3.1
  ],
- "Extend the ray through O.": [
-  "vo097",
+ "Which angle is opposite ∠2?": [
+  "vo221",
+  3.29
+ ],
+ "∠4 lies opposite ∠2.": [
+  "vo222",
+  3.86
+ ],
+ "These pairs are called vertically opposite angles.": [
+  "vo223",
+  4.06
+ ],
+ "Rotate one line and watch ∠1 and ∠3.": [
+  "vo224",
+  4.46
+ ],
+ "Their measures change together.": [
+  "vo225",
   2.66
  ],
- "Lines AB and CD intersect at O.": [
-  "vo098",
-  3.98
+ "What stays the same about ∠1 and ∠3?": [
+  "vo226",
+  4.3
  ],
- "Tap the angle opposite ∠1, then Check.": [
-  "vo099",
-  4.01
+ "Measuring suggests that opposite angles are equal.": [
+  "vo227",
+  3.82
+ ],
+ "Can we prove that ∠1 = ∠3?": [
+  "vo228",
+  4.06
+ ],
+ "∠1 and ∠2 form a linear pair.": [
+  "vo114",
+  3.62
+ ],
+ "Therefore, ∠1 + ∠2 = 180°.": [
+  "vo229",
+  6.38
+ ],
+ "∠2 and ∠3 also form a linear pair.": [
+  "vo230",
+  4.42
+ ],
+ "Therefore, ∠2 + ∠3 = 180°.": [
+  "vo231",
+  5.86
+ ],
+ "Both expressions are equal to 180°.": [
+  "vo232",
+  4.9
+ ],
+ "So ∠1 + ∠2 = ∠2 + ∠3.": [
+  "vo125",
+  5.98
+ ],
+ "Subtract the same ∠2 from both sides.": [
+  "vo233",
+  4.22
+ ],
+ "We are left with ∠1 = ∠3.": [
+  "vo234",
+  4.3
+ ],
+ "Can you prove that ∠2 = ∠4?": [
+  "vo235",
+  3.94
+ ],
+ "Which angle forms a linear pair with both ∠2 and ∠4?": [
+  "vo236",
+  5.78
+ ],
+ "That is one of the two angles we are comparing. Look between ∠2 and ∠4.": [
+  "vo237",
+  6.41
+ ],
+ "∠1 sits next to both ∠2 and ∠4.": [
+  "vo238",
+  5.14
+ ],
+ "∠3 works too — we will use ∠1, which also sits next to both.": [
+  "vo239",
+  5.57
+ ],
+ "∠1 + ∠2 = 180°.": [
+  "vo240",
+  5.54
+ ],
+ "∠1 + ∠4 = 180°.": [
+  "vo241",
+  4.61
+ ],
+ "Subtract ∠1 from both sides.": [
+  "vo242",
+  3.17
+ ],
+ "Therefore, ∠2 = ∠4.": [
+  "vo243",
+  4.34
+ ],
+ "When two lines intersect, vertically opposite angles are equal.": [
+  "vo244",
+  5.06
+ ],
+ "If ∠1 is 67°, what is ∠3?": [
+  "vo245",
+  4.78
+ ],
+ "113° is the angle next to ∠1. ∠3 sits directly across from it.": [
+  "vo246",
+  7.46
+ ],
+ "∠3 sits directly across from ∠1 — opposite angles are equal.": [
+  "vo247",
+  6.1
+ ],
+ "∠3 is opposite ∠1, so ∠3 = 67°.": [
+  "vo248",
+  6.17
+ ],
+ "What is ∠2 if it forms a linear pair with 67°?": [
+  "vo249",
+  5.02
+ ],
+ "67° is ∠1 itself. Together ∠1 and ∠2 must make 180°.": [
+  "vo250",
+  9.02
+ ],
+ "67° + 113° = 180°, so ∠2 = 113°.": [
+  "vo251",
+  10.42
+ ],
+ "What is ∠4 now?": [
+  "vo252",
+  2.45
+ ],
+ "67° belongs to the other opposite pair. ∠4 sits across from ∠2.": [
+  "vo253",
+  6.98
+ ],
+ "∠4 sits directly across from ∠2 — opposite angles are equal.": [
+  "vo254",
+  6.26
+ ],
+ "∠4 is opposite ∠2, so ∠4 = 113°.": [
+  "vo255",
+  6.74
+ ],
+ "Both pairs total 180°; which pair can use the converse?": [
+  "vo256",
+  5.3
  ],
  "∠2 shares an arm with ∠1. Look across the vertex.": [
   "vo100",
@@ -405,14 +445,6 @@ const VO_LINES = {
   "vo101",
   5.81
  ],
- "∠1 and ∠3 sit directly opposite.": [
-  "vo102",
-  4.54
- ],
- "Now tap the angle opposite ∠2.": [
-  "vo103",
-  3.26
- ],
  "∠1 shares an arm with ∠2. Look straight across O.": [
   "vo104",
   6.05
@@ -420,229 +452,5 @@ const VO_LINES = {
  "∠3 shares an arm with ∠2. Look straight across O.": [
   "vo105",
   5.33
- ],
- "Two pairs of vertically opposite angles.": [
-  "vo106",
-  3.17
- ],
- "Rotate CD. Compare opposite angles.": [
-  "vo107",
-  4.01
- ],
- "The angles change...": [
-  "vo108",
-  2.18
- ],
- "...but opposite angles stay equal.": [
-  "vo109",
-  2.62
- ],
- "Can we show ∠1 = ∠3 without measuring?": [
-  "vo110",
-  4.66
- ],
- "Tap the two angles we want to compare.": [
-  "vo111",
-  2.62
- ],
- "We want ∠1 and the angle opposite it.": [
-  "vo112",
-  3.77
- ],
- "Goal: prove ∠1 = ∠3 with reasons, not a protractor.": [
-  "vo113",
-  5.33
- ],
- "∠1 and ∠2 form a linear pair.": [
-  "vo114",
-  3.62
- ],
- "Choose the total, then the reason.": [
-  "vo115",
-  3.02
- ],
- "90° is a right angle. These two fill a straight line.": [
-  "vo116",
-  5.78
- ],
- "360° is a full turn. These two fill only a straight line.": [
-  "vo117",
-  6.26
- ],
- "They are next to each other, not opposite.": [
-  "vo118",
-  3.22
- ],
- "A proof cannot rely on measuring.": [
-  "vo119",
-  3.41
- ],
- "∠1 + ∠2 = 180°, a linear pair.": [
-  "vo120",
-  6.74
- ],
- "∠2 and ∠3 form a linear pair.": [
-  "vo121",
-  4.82
- ],
- "Notice: both totals are 180°.": [
-  "vo122",
-  4.13
- ],
- "Tap the two equal totals.": [
-  "vo123",
-  2.5
- ],
- "Both expressions equal the same value.": [
-  "vo124",
-  3.38
- ],
- "So ∠1 + ∠2 = ∠2 + ∠3.": [
-  "vo125",
-  5.98
- ],
- "The same ∠2 appears on both sides.": [
-  "vo126",
-  3.53
- ],
- "Tap ∠2 on each side.": [
-  "vo127",
-  2.9
- ],
- "That angle is on only one side.": [
-  "vo128",
-  2.86
- ],
- "Subtract it from both sides.": [
-  "vo129",
-  2.69
- ],
- "∠1 = ∠3 — proved without measuring.": [
-  "vo130",
-  5.18
- ],
- "Now show ∠2 = ∠4.": [
-  "vo131",
-  3.65
- ],
- "Which angle pairs with both ∠2 and ∠4?": [
-  "vo132",
-  4.25
- ],
- "Both are true — but to cancel, use the same angle in both.": [
-  "vo133",
-  4.73
- ],
- "Both are 180°, so ∠2 + ∠1 = ∠4 + ∠1.": [
-  "vo134",
-  8.42
- ],
- "Both are 180°, so ∠2 + ∠3 = ∠4 + ∠3.": [
-  "vo135",
-  8.66
- ],
- "Same reasoning, different pair: ∠2 = ∠4.": [
-  "vo136",
-  5.69
- ],
- "Tap an angle to see its opposite pair.": [
-  "vo137",
-  3.17
- ],
- "Vertically opposite angles are always equal.": [
-  "vo138",
-  3.89
- ],
- "∠1 is 67°. Find the other three angles.": [
-  "vo139",
-  5.02
- ],
- "Choose each measure and its reason.": [
-  "vo140",
-  2.93
- ],
- "∠1 and ∠2 are a linear pair — they make 180°.": [
-  "vo141",
-  5.21
- ],
- "∠2 is next to ∠1, not opposite it.": [
-  "vo142",
-  3.94
- ],
- "∠3 sits directly across the vertex from ∠1.": [
-  "vo143",
-  5.14
- ],
- "∠3 is across the vertex from ∠1.": [
-  "vo144",
-  4.66
- ],
- "∠4 and ∠1 are a linear pair along line CD.": [
-  "vo145",
-  5.42
- ],
- "Opposite angles are equal: ∠3 = 67°, ∠4 = ∠2.": [
-  "vo146",
-  7.7
- ],
- "Linear pairs total 180°: 67° + 113° = 180°.": [
-  "vo147",
-  9.89
- ],
- "Which angle is vertically opposite to ∠1?": [
-  "vo148",
-  3.53
- ],
- "Every angle is 90° — so don’t use the number.": [
-  "vo149",
-  4.18
- ],
- "Look across the vertex, then Check.": [
-  "vo150",
-  3.22
- ],
- "∠2 shares an arm with ∠1. Opposite angles share only the vertex.": [
-  "vo151",
-  6.17
- ],
- "∠4 shares an arm with ∠1. Opposite angles share only the vertex.": [
-  "vo152",
-  7.22
- ],
- "Yes — ∠3 sits directly across from ∠1.": [
-  "vo153",
-  4.9
- ],
- "Which pair's non-common arms must form a line?": [
-  "vo154",
-  4.06
- ],
- "Pair B totals 180° too — but it is not adjacent.": [
-  "vo155",
-  5.14
- ],
- "Adjacent and 180° — so the outer arms form a line.": [
-  "vo156",
-  6.1
- ],
- "You can find angles without measuring them.": [
-  "vo157",
-  3.46
- ],
- "Tap each relationship to replay it.": [
-  "vo158",
-  2.98
- ],
- "Vertically opposite angles are equal.": [
-  "vo159",
-  2.93
- ],
- "Adjacent + 180° → outer arms form a line.": [
-  "vo160",
-  7.37
- ],
- "You built it, explored it, and proved it.": [
-  "vo161",
-  5.09
  ]
 };

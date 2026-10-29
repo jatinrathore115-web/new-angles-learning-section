@@ -1,5 +1,7 @@
 # Voice-over
 
+> **Status after the 74-screen rebuild:** `tools/vo_script.json` now holds the 120 lines of the new lesson. Each one has a spoken form that follows the rules below. The 18 lines that match an earlier recording keep their clip id and still play. The 102 new lines (`vo162`–`vo263`) type silently until they are generated in the studio and built with `node tools/vo_build.mjs`. That run also deletes the old clips that no line uses any more. The figures in the rest of this document describe the earlier 29-screen version.
+
 Every line the narration bar can show is voiced: **161 lines, 11.5 minutes, 2.7 MB** in `assets/vo/`. That covers screen titles, steps, prompts, hints, wrong- and right-answer feedback, proof steps and the recap. Each clip is looked up by the exact text on screen, and the line types word by word at the voice's pace.
 
 ## How the clips were made
