@@ -1,6 +1,6 @@
 # Voice-over
 
-> **Status after the 74-screen rebuild:** `tools/vo_script.json` now holds the 120 lines of the new lesson. Each one has a spoken form that follows the rules below. The 18 lines that match an earlier recording keep their clip id and still play. The 102 new lines (`vo162`–`vo263`) type silently until they are generated in the studio and built with `node tools/vo_build.mjs`. That run also deletes the old clips that no line uses any more. The figures in the rest of this document describe the earlier 29-screen version.
+> **Status:** all 120 lines of the 74-screen lesson are voiced (`vo001`–`vo267` in `tools/vo_script.json`, 9.9 minutes). Each clip ships as Ogg Opus plus a `.caf` twin for Safari, and with its measured speech timing. The figures in the sections below the next paragraph describe the earlier 29-screen version.
 
 Every line the narration bar can show is voiced: **161 lines, 11.5 minutes, 2.7 MB** in `assets/vo/`. That covers screen titles, steps, prompts, hints, wrong- and right-answer feedback, proof steps and the recap. Each clip is looked up by the exact text on screen, and the line types word by word at the voice's pace.
 
@@ -45,13 +45,15 @@ The voice reads exactly what it is given, so `tools/vo_script.json` holds a **sp
 
 ## How the game uses the clips
 
-- `js/vo_lines.js` (generated, do not edit) maps the **exact plain line** to `[clip id, seconds]`.
-- `js/core/voice.js` is the player. It uses one reused `<audio>` element, which is unlocked on the *Begin* tap so tablets will play it later. All clips are prefetched one at a time after Begin.
-- `ctx.say()` in `js/core/engine.js` is the single choke point. It shows the line and speaks it, and the screen's timeline waits for the voice to finish. The line appears **word by word at `max(16, (seconds − 0.35) × 1000 / characters)` ms per character**, so each word lands as it is said.
-- A new line stops the previous voice, and a screen change stops it too. If a line is already playing, asking for it again joins that clip instead of restarting it, and a line that was just said is not repeated.
+- `js/vo_lines.js` (generated, do not edit) maps the **exact plain line** to `[clip id, seconds, speech onset, speech end, pauses]`. The last three come from `tools/vo_timing.mjs`, which decodes each clip and finds where the narrator speaks and pauses (10 ms frames, pauses of 90 ms or more).
+- `js/core/voice.js` is the player. It uses one reused `<audio>` element, which is unlocked on the *Begin* tap so tablets will play it later. It picks `assets/vo/<id>.ogg` where the browser plays Ogg Opus, and otherwise `<id>.caf`: the same Opus packets in a Core Audio container, which Safari and iOS play. Over http(s), every clip is downloaded in lesson order after *Begin* (three at a time) and kept in memory, so later lines start at once on a slow connection.
+- **The voice is the clock.** `ctx.say()` in `js/core/engine.js` is the single choke point. It calls `UI.narrate()`, which starts the clip and drives the words from the clip's own playback position (`audio.currentTime`). Each word rises in, and carries the soft "spoken now" highlight, when the narrator reaches it. Geometry cues (`cues: { word: fn }`) fire on the same clock. A clip that starts late, buffers or stalls therefore never leaves the text or the figure ahead of the voice.
+- **Word timing.** The clip's measured pauses are matched, in order, to the word gaps that carry punctuation (a monotone alignment in `wordTimes()`). Words between two matched pauses are spread by how long they take to say, so "90°" counts as "ninety degrees" and "OA" as two letters.
+- **Two-chunk lines.** A line over 58 characters splits into two chunks at the sentence end, or failing that the dash, semicolon or comma, nearest its middle. A line can also mark its break with ` | ` in the screen source; the bar never shows it. Chunk 1 is shown, the voice rests 450 ms in the narrator's own pause at the break, then chunk 2 replaces it in the same place.
+- A new line stops the previous voice, and a screen change stops it too. If a line is already playing, asking for it again joins that clip instead of restarting it, and a line that was just said is not repeated. Replay restarts the words and the voice together.
 - Sound effects duck under the voice.
-- **Safety.** A stalled clip times out after its length plus about 1.4 s. If `play()` is rejected or a file is missing, the line types silently at reading pace. The lesson never waits on audio.
-- **Turning it off.** `?vo=0` turns the narration off. Browsers without Ogg Opus (`canPlayType('audio/ogg; codecs="opus"')` is empty, as on older Safari and iPadOS) type the lines silently. `?speed=N` sets the playback rate (0.5–4) for testing.
+- **Safety.** A watchdog follows the clip. A clip that has not started after 6 s, or that makes no progress for 4 s, hands over to reading pace from where it was. If `play()` is rejected or a file is missing, the line types silently at reading pace. The lesson never waits on audio. A phone that locks or a tab sent to the background resumes the line on return instead of skipping it.
+- **Turning it off.** `?vo=0` turns the narration off. `?speed=N` sets the playback rate (0.5–4) for testing.
 - On screens whose first line tells the learner to move a ray, that line is held until the figure is built (`holdTitle`), so the words and the ray demo start together.
 
 ## Remaking a line
@@ -64,7 +66,7 @@ The voice reads exactly what it is given, so `tools/vo_script.json` holds a **sp
    node tools/vo_build.mjs voiceovers_batch.zip
    ```
 
-   The build converts the clips, keeps the existing ones, regenerates `js/vo_lines.js`, lists any line still without a clip, and removes clips that no line uses. It is safe to run again, and it needs Node 22+ and Google Chrome. Chrome does the MP3 decode and the Opus encode with WebCodecs, and the tool writes the Ogg pages itself (RFC 7845). No ffmpeg or Python is required. Set `CHROME=` if Chrome is not at the default Windows path.
+   The build converts the clips, times their speech and writes the Safari `.caf` copies (`tools/vo_timing.mjs`), keeps the existing ones, regenerates `js/vo_lines.js`, lists any line still without a clip, and removes clips that no line uses. It is safe to run again, and it needs Node 22+ and Google Chrome. Chrome does the MP3 decode and the Opus encode with WebCodecs, and the tool writes the Ogg pages itself (RFC 7845). No ffmpeg or Python is required. Set `CHROME=` if Chrome is not at the default Windows path.
 
 ## All clips
 

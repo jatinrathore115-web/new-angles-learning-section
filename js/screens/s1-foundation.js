@@ -150,33 +150,56 @@
         S.pulse(ITEMS[k].obj, 700);
         ctx.sayNow(FEEDBACK[k], { tone: 'warn' });   // what that drawing actually shows
       };
+      // drag a name onto a drawing — or tap/Enter a name, then tap/Enter a drawing's slot
+      // (touch and keyboard); either way the same check runs, nothing is placed for free
+      let picked = null;
+      const pickCard = card => {
+        picked = card === picked ? null : card;
+        cards.forEach(c => c.classList.toggle('sel', c === picked));
+        slots.forEach(s => s.classList.toggle('ready', !!picked && !s.classList.contains('done')));
+        if (picked) Sound.play('ui.select');
+      };
+      const drop = (card, j) => {
+        pickCard(null);
+        if (ORDER[j] === card.dataset.k) place(card, j); else wrong(card, j);
+      };
+      slots.forEach((slot, j) => {
+        slot.setAttribute('role', 'button'); slot.setAttribute('tabindex', '0');
+        slot.setAttribute('aria-label', `Drawing ${j + 1}: place the chosen name here`);
+        const go = () => { if (S.enabled && picked && !slot.classList.contains('done')) drop(picked, j); };
+        ctx.on(slot, 'click', go);
+        ctx.on(slot, 'keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+      });
       cards.forEach(card => {
-        let drag = false, off = null;
+        let drag = false, off = null, from = null, moved = false;
         ctx.on(card, 'pointerdown', ev => {
           if (!S.enabled || card.classList.contains('placed')) return;
-          drag = true; card.setPointerCapture(ev.pointerId); card.classList.add('drag');
-          Sound.play('ui.select');
-          const p = UI.toStage(ev); off = { x: parseFloat(card.style.left) - p.x, y: parseFloat(card.style.top) - p.y };
+          drag = true; moved = false; card.setPointerCapture(ev.pointerId); card.classList.add('drag');
+          const p = UI.toStage(ev); from = p; off = { x: parseFloat(card.style.left) - p.x, y: parseFloat(card.style.top) - p.y };
         });
         ctx.on(card, 'pointermove', ev => {
           if (!drag) return;
           const p = UI.toStage(ev), q = { x: p.x + off.x, y: p.y + off.y };
+          if (!moved && Math.hypot(p.x - from.x, p.y - from.y) < 10) return;   // a tap, not a drag (yet)
+          if (!moved) { moved = true; Sound.play('ui.select'); pickCard(null); }
           card.style.left = q.x + 'px'; card.style.top = q.y + 'px';
           const j = slotAt(q); slots.forEach((s, n) => s.classList.toggle('over', n === j));
         });
         const up = () => {
           if (!drag) return;
           drag = false; card.classList.remove('drag');
-          const q = { x: parseFloat(card.style.left), y: parseFloat(card.style.top) };
           slots.forEach(s => s.classList.remove('over'));
-          const j = slotAt(q);
+          if (!moved) { pickCard(card); return; }
+          const j = slotAt({ x: parseFloat(card.style.left), y: parseFloat(card.style.top) });
           if (j < 0) { home(card); return; }
-          if (ORDER[j] === card.dataset.k) place(card, j); else wrong(card, j);
+          drop(card, j);
         };
         ctx.on(card, 'pointerup', up); ctx.on(card, 'pointercancel', up);
         ctx.on(card, 'keydown', e => {
-          if (e.key !== 'Enter' || card.classList.contains('placed') || !S.enabled) return;
-          place(card, ORDER.indexOf(card.dataset.k));
+          if ((e.key !== 'Enter' && e.key !== ' ') || card.classList.contains('placed') || !S.enabled) return;
+          e.preventDefault();
+          pickCard(card);
+          if (picked) slots.find(s => !s.classList.contains('done'))?.focus();
         });
       });
       ctx.idle(() => { const c = cards.find(c => !c.classList.contains('placed')); if (c) c.animate([{ transform: 'translate(-50%,-50%)' }, { transform: 'translate(-50%,-60%)' }, { transform: 'translate(-50%,-50%)' }], { duration: 700, easing: 'ease-in-out' }); });
@@ -194,12 +217,14 @@
     id: 'S03', chapter: 0, topic: 'FORMING AN ANGLE', topicShort: 'Two rays from O', holdTitle: true,
     title: 'Two rays begin at the same point *O.*',
     async run(ctx, S) {
-      // the matched ray is carried here and becomes the angle's fixed arm
-      angleFig(S);
+      // the matched ray is carried here and becomes the angle's fixed arm; a second ray
+      // OB starts at the same point and, for now, lies along OA (screen 4 turns it open)
+      angleFig(S, { b: 0, arc: false });
       ctx.state('DEMONSTRATE');
       await reveal(ctx, S, ['O', 'OA']);
+      if (S.get('OB').st.prog > 0.99 && Math.abs(G.delta(S.get('OB').st.angle, 0)) > 0.5) await turn(S, 'OB', 0, 500);   // BACK from screen 4
       await ctx.say(this.title, { cues: {
-        rays: () => S.pulse('OA', 700),
+        'two rays': () => { S.show('OB', { dur: 550 }); Sound.play('geometry.draw'); return S.pulseMany(['OA', 'OB'], 700); },
         // the shared starting point is the one thing to notice
         'point o': async () => {
           Sound.play('vertex.pulse');

@@ -1,0 +1,18 @@
+{
+  "headers": [
+    {
+      "source": "/assets/vo/(.*)\\.caf",
+      "headers": [
+        { "key": "Content-Type", "value": "audio/x-caf" },
+        { "key": "Cache-Control", "value": "public, max-age=86400" }
+      ]
+    },
+    {
+      "source": "/assets/vo/(.*)\\.ogg",
+      "headers": [
+        { "key": "Content-Type", "value": "audio/ogg" },
+        { "key": "Cache-Control", "value": "public, max-age=86400" }
+      ]
+    }
+  ]
+}

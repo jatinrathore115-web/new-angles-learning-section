@@ -18,68 +18,124 @@
   /* ---------------------------------------------------- narration line
      The single primary text element of every screen. It carries the
      narrator's current step, the task prompt and feedback. *word* marks
-     a highlighted keyword. */
-  /** words of a line, keeping *emphasis*: [{ w, em, key }] (key: lower-case, no trailing punctuation) */
+     a highlighted keyword; " | " marks where a long line splits into two chunks. */
+  /** words of a line, keeping *emphasis*: [{ w, em, key, brk }] (key: lower-case, no trailing
+      punctuation; brk: a chunk break was marked before this word) */
   function wordsOf(src) {
     const out = [];
+    let brk = false;
     src.split(/(\*[^*]+\*)/).filter(Boolean).forEach(part => {
       const em = /^\*.*\*$/.test(part);
-      (em ? part.slice(1, -1) : part).split(/\s+/).filter(Boolean).forEach(w => out.push({ w, em, key: w.toLowerCase().replace(/[.,;:?!’'"—]+$/g, '').replace(/^['"‘]+/, '') }));
+      (em ? part.slice(1, -1) : part).split(/\s+/).filter(Boolean).forEach(w => {
+        if (w === '|') { brk = true; return; }
+        out.push({ w, em, brk, key: w.toLowerCase().replace(/[.,;:?!’'"—]+$/g, '').replace(/^['"‘]+/, '') });
+        brk = false;
+      });
     });
     return out;
   }
   function headingHTML(src) { return wordsOf(src).map(o => o.em ? `<em>${o.w}</em>` : o.w).join(' '); }
 
-  /* Word-by-word narration. Each word rises in when the narrator reaches it:
-     with a recorded clip the pace comes from the clip length (character-weighted),
-     without one a calm narrator pace is used. line() returns the schedule so the
-     screen can fire geometry cues on the exact words that name them. */
+  /** where a long line splits into two chunks (index of the first word of chunk 2), or 0.
+      A marked break wins; otherwise a line over CHUNK_AT characters splits at the sentence
+      end — or failing that the dash, semicolon or comma — nearest its middle, so each chunk
+      is a complete thought. */
+  const CHUNK_AT = 58, CHUNK_MIN = 18;
+  function chunkBreak(words) {
+    const marked = words.findIndex(o => o.brk);
+    if (marked > 0) return marked;
+    const len = words.reduce((n, o) => n + o.w.length + 1, 0);
+    if (len <= CHUNK_AT) return 0;
+    let best = 0, bestScore = Infinity, at = 0;
+    for (let i = 0; i < words.length - 1; i++) {
+      at += words[i].w.length + 1;
+      const w = words[i].w, nx = words[i + 1].w;
+      // the break goes after a sentence end, or before a dash that opens a new clause
+      const rank = /[.?!]$/.test(w) ? 0 : nx === '—' ? 1 : /[;:]$/.test(w) ? 1 : /,$/.test(w) ? 2 : -1;
+      if (rank < 0 || at < CHUNK_MIN || len - at < CHUNK_MIN) continue;
+      const score = rank * 14 + Math.abs(at - len / 2);
+      if (score < bestScore) { bestScore = score; best = nx === '—' ? i + 2 : i + 1; }
+    }
+    return best < words.length ? best : 0;
+  }
+  const CHUNK_HOLD = 450;     // ms the voice rests between two chunks, so chunk 1 can land
+
+  /* Word-by-word narration, driven by the voice's own clock: each word rises in, and
+     carries the soft "spoken now" highlight, when the narrator reaches it — so the text
+     stays on the voice even if a clip starts late or stalls. A long line shows as two
+     chunks, one at a time, with a short rest between them. narrate() returns the
+     schedule so a screen can fire geometry cues on the exact words that name them. */
   const lineEl = $('heading');
-  let lineTok = 0, lineKey = '', sched = null;
-  function line(text, { tone = '', dur = null } = {}) {
+  let lineTok = 0, lineKey = '', sched = null, current = null, offTick = null;
+  function narrate(text, { tone = '', force = false } = {}) {
     const key = tone + '|' + text;
-    if (key === lineKey && sched) return sched;
+    if (!force && key === lineKey && sched) return sched;      // the same line again joins it
     lineKey = key;
     const tok = ++lineTok;
     const words = wordsOf(text);
-    const lead = lineEl.innerHTML ? 200 : 0;               // the previous line lifts away first
-    const chars = words.reduce((n, o) => n + o.w.length + 1, 0) || 1;
-    const perChar = dur ? Math.max(14, (dur - 0.35) * 1000 / chars) : 0;
-    let at = dur ? 140 : 60;
-    const times = words.map(o => {
-      const t = at;
-      at += dur ? (o.w.length + 1) * perChar : 150 + (/[,;:—]$/.test(o.w) ? 160 : /[.?!]$/.test(o.w) ? 220 : 0);
-      return { key: o.key, t };
-    });
-    sched = { start: performance.now() + lead * Tween.TS, lead, times, end: at, text, tone };
+    const brk = chunkBreak(words);
+    const lead = lineEl.innerHTML ? 200 : 0;                   // the previous line lifts away first
+    const tl = Voice.timeline(text, words.map(o => o.w), brk ? brk - 1 : -1);
+    let times, end;
+    if (tl) { times = tl.t; end = tl.end; }
+    else {
+      let at = 60 + lead;
+      times = words.map(o => { const t = at; at += 150 + (/[,;:—]$/.test(o.w) ? 160 : /[.?!]$/.test(o.w) ? 220 : 0); return t; });
+      end = at;
+    }
+    // rest the voice in the measured pause between the chunks (never mid-word)
+    const gap = tl && brk && tl.gaps.find(g => g.after === brk - 1 || (words[brk - 1].w === '—' && g.after === brk - 2));
+    const hold = gap ? { at: (gap.from + gap.to) / 2, ms: CHUNK_HOLD } : null;
+    const swapAt = brk ? times[brk] - 160 : Infinity;
+    const voice = Voice.speak(text, { force, hold });
+    stopTick();
+    sched = { times: words.map((o, i) => ({ key: o.key, t: times[i] })), end, text, tone, clock: voice.clock, promise: voice.promise, tok };
     current = { text, tone };
-    stopFollow();
+
     const show = () => {
       if (tok !== lineTok) return;
       const badge = tone === 'good' ? '<i class="tb good"></i>' : tone === 'warn' ? '<i class="tb warn"></i>' : '';
-      const n = text.replace(/\*/g, '').length;
-      lineEl.className = 'heading ' + tone + (n > 70 ? ' xlong' : n > 46 ? ' long' : '');
-      lineEl.innerHTML = `<span class="ln">${badge}${words.map((o, i) => `<span class="w" style="transition-delay:${Math.round(times[i].t * Tween.TS)}ms">${o.em ? `<em>${o.w}</em>` : o.w}</span>`).join(' ')}</span>`;
-      requestAnimationFrame(() => requestAnimationFrame(() => { if (tok === lineTok) lineEl.classList.add('in'); }));
-      // the word being spoken right now carries a soft highlight (the reader's place-keeper)
-      const ws = [...lineEl.querySelectorAll('.w')];
-      times.forEach((t, i) => follow.push(setTimeout(() => {
-        if (tok !== lineTok) return;
-        ws.forEach((w, j) => w.classList.toggle('cur', j === i));
-      }, t.t * Tween.TS)));
-      follow.push(setTimeout(() => { if (tok === lineTok) ws.forEach(w => w.classList.remove('cur')); }, (at + 260) * Tween.TS));
+      const chunks = brk ? [words.slice(0, brk), words.slice(brk)] : [words];
+      const chars = ws => ws.reduce((k, o) => k + o.w.length + 1, 0);
+      const size = ws => { const n = chars(ws); return n > 70 ? ' xlong' : n > 46 ? ' long' : ''; };
+      // the resting whole line keeps each chunk on one row: ~54 characters fit at 40px, ~68 at 33px
+      const wholeSize = n => n > 54 ? ' xlong' : n > 44 ? ' long' : '';
+      const wordHTML = (o, cls) => `<span class="${cls}">${o.em ? `<em>${o.w}</em>` : o.w}</span>`;
+      lineEl.className = 'heading ' + tone + (brk ? ' chunked' : size(words));
+      // a chunked line also holds the whole sentence, hidden: once the voice is done the bar
+      // settles on it, so the learner can reread the complete statement (no layout shift —
+      // all three share one grid cell)
+      lineEl.innerHTML = chunks.map((c, ci) => `<span class="ln${ci ? ' next' : ''}${brk ? size(c) : ''}">${badge}${c.map(o => wordHTML(o, 'w')).join(' ')}</span>`).join('')
+        + (brk ? `<span class="ln whole next${wholeSize(Math.max(chars(chunks[0]), chars(chunks[1])))}">${badge}${chunks.map(c => c.map(o => wordHTML(o, 'w on')).join(' ')).join('<br>')}</span>` : '');
+      const lns = [...lineEl.querySelectorAll('.ln')], ws = lns.slice(0, chunks.length).flatMap(l => [...l.querySelectorAll('.w')]);
+      requestAnimationFrame(() => { if (tok === lineTok) lineEl.classList.add('in'); });
+      let shown = -1, spoken = -2, chunk = 0;
+      offTick = Tween.onFrame(() => {
+        if (tok !== lineTok) return stopTick();
+        const pos = voice.clock();
+        // words appear a touch before they are said, so the eye arrives with the voice
+        while (shown + 1 < ws.length && pos >= times[shown + 1] - 90) ws[++shown].classList.add('on');
+        if (brk && !chunk && pos >= swapAt) { chunk = 1; lns[0].classList.add('gone'); lns[1].classList.remove('next'); }
+        let s = -1;
+        if (pos < end + 220) for (let j = shown; j >= 0; j--) if (pos >= times[j]) { s = j; break; }
+        if (s !== spoken) { if (spoken >= 0) ws[spoken].classList.remove('cur'); if (s >= 0) ws[s].classList.add('cur'); spoken = s; }
+        if (pos === Infinity || (pos > end + 400 && shown === ws.length - 1)) {
+          ws.forEach(w => w.classList.add('on'));
+          if (brk) { lns[0].classList.add('gone'); lns[1].classList.add('gone'); lns[1].classList.remove('next'); lns[2].classList.remove('next'); }
+          stopTick();
+        }
+      });
     };
     if (lead) { lineEl.classList.remove('in'); lineEl.classList.add('out'); setTimeout(show, lead * Tween.TS); }
     else show();
     return sched;
   }
-  let follow = [], current = null;
-  function stopFollow() { follow.forEach(clearTimeout); follow = []; }
-  function clearLine() { stopFollow(); lineTok++; lineKey = ''; sched = null; current = null; lineEl.classList.remove('in'); lineEl.classList.add('out'); }
+  function stopTick() { if (offTick) { offTick(); offTick = null; } }
+  function clearLine() { stopTick(); lineTok++; lineKey = ''; sched = null; current = null; lineEl.classList.remove('in'); lineEl.classList.add('out'); }
   /** the line on screen now (for replay) */
   function currentLine() { return current; }
-  /** show the current line again from its first word (replay) */
-  function restartLine(dur) { if (!current) return null; const c = current; lineKey = ''; return line(c.text, { tone: c.tone, dur }); }
+  /** say the current line again from its first word: words and voice restart together */
+  function replayLine() { if (!current) return null; return narrate(current.text, { tone: current.tone, force: true }); }
 
   const panel = $('panel'), panelBody = $('panelBody');
 
@@ -340,5 +396,5 @@
 
   function setFocus(x, y) { const f = $('bgFocus'); f.style.left = (x - 380) + 'px'; f.style.top = (y - 380) + 'px'; }
 
-  window.UI = { h, rectOf, toStage, line, clearLine, currentLine, restartLine, correct, incorrect, rain, wordsOf, Panel, choices, ov, clearOverlay, fadeOverlay, inNext, fly, pickHTML, pick, closePicks, Dock, chapter, setFocus, headingHTML };
+  window.UI = { h, rectOf, toStage, narrate, clearLine, currentLine, replayLine, correct, incorrect, rain, wordsOf, Panel, choices, ov, clearOverlay, fadeOverlay, inNext, fly, pickHTML, pick, closePicks, Dock, chapter, setFocus, headingHTML };
 })();

@@ -111,11 +111,12 @@
     const m = Mini.make();
     // reflex checks need room below the vertex for the 180°–360° zone
     const O = zone[0] === 180 ? { x: 150, y: 112 } : { x: deg > 100 ? 175 : 100, y: 190 };
-    m.zone(O, zone[0], zone[1], 96, zone[2]);
+    m.zone(O, zone[0], zone[1], 96);   // its range is written under the card (inside, it would sit on an arm)
     m.arc(O, 0, deg, 52, 'gold');
     m.ray(O, 0, 140, 'cyan', { plain: true }).ray(O, deg, zone[0] === 180 ? 112 : 132, 'mag', { plain: true }).v(O);
     return m.svg(300, 230);
   }
+  const zoneNote = range => `<span class="zone-note">${range}</span>`;
   function checkScreen(def) {
     return {
       id: def.id, chapter: 1, topic: 'QUICK CHECK', topicShort: def.short, cfu: true, title: def.title,
@@ -135,12 +136,15 @@
           // show the valid range on the chosen diagram instead of a cross
           cards.card(v).classList.add('bad');
           cards.svg(v).classList.add('show-zone');
+          cards.note(v, zoneNote(def.zone[2]));
           await ctx.bad(def.hint[v]);
           ctx.state('AWAIT_CHECK');
         }
         cards.lock(def.correct);
         cards.cards.forEach(c => c.querySelector('svg').classList.remove('show-zone'));
+        cards.cards.forEach(c => { if (c.dataset.id !== def.correct) cards.note(c.dataset.id, ''); });
         cards.svg(def.correct).classList.add('show-zone');
+        cards.note(def.correct, zoneNote(def.zone[2]));
         await ctx.good(def.good);
         ctx.complete();
       },

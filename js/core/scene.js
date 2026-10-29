@@ -33,6 +33,25 @@
   function T(e, s) { if (e.__t !== s) { e.__t = s; e.textContent = s; } }
   const f2 = n => (Math.round(n * 100) / 100).toString();
   const C = c => COL[c] || COL.cyan;
+  /* Inactive geometry ("dim") cools toward slate instead of fading out: a half-transparent
+     gold or magenta over the navy stage turns muddy olive/brown, a slate stroke stays a
+     clean, quiet "not now". */
+  const DIMC = [93, 116, 168];
+  const hexRGB = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  const mixCache = new Map();
+  function tone(hex, dim) {
+    if (!(dim > 0.001)) return hex;
+    const k = hex + Math.round(dim * 40);
+    let v = mixCache.get(k);
+    if (!v) {
+      const t = Math.min(1, dim) * 0.82, a = hexRGB(hex);
+      v = '#' + a.map((x, i) => Math.round(x + (DIMC[i] - x) * t).toString(16).padStart(2, '0')).join('');
+      mixCache.set(k, v);
+    }
+    return v;
+  }
+  const dimOp = dim => 1 - dim * 0.42;
+  let gradId = 0;
 
   /* ---------------------------------------------------------------- base */
   class Obj {
@@ -67,10 +86,10 @@
     render() {
       const s = this.st, c = C(s.color);
       const k = 1 + s.hl * 0.9 + s.hov * 0.3;
-      const op = s.op * (1 - s.dim * 0.55);
+      const op = s.op * dimOp(s.dim);
       A(this.halo, 'cx', f2(s.x)); A(this.halo, 'cy', f2(s.y));
       A(this.halo, 'r', f2(13 * k * s.size));
-      A(this.halo, 'stroke', c.glow); A(this.halo, 'stroke-width', f2(3 + s.hl * 3));
+      A(this.halo, 'stroke', tone(c.glow, s.dim)); A(this.halo, 'stroke-width', f2(3 + s.hl * 3));
       A(this.halo, 'opacity', f2(op * (0.45 + s.hl * 0.5)));
       A(this.core, 'cx', f2(s.x)); A(this.core, 'cy', f2(s.y));
       A(this.core, 'r', f2(6.5 * (1 + s.hl * 0.35) * s.size)); A(this.core, 'opacity', f2(op));
@@ -109,20 +128,21 @@
       const s = this.st, c = C(s.color), O = this.origin();
       const start = G.at(O, s.angle, s.base);
       const tip = this.tip();
-      const vis = s.op * (1 - s.dim * 0.7) * (s.prog > 0.001 ? 1 : 0);
+      const vis = s.op * dimOp(s.dim) * (s.prog > 0.001 ? 1 : 0);
+      const core = tone(c.core, s.dim);
       const w = s.width * (1 + s.hl * 0.6 + s.hov * 0.25);
       for (const e of [this.glow, this.core]) {
         A(e, 'x1', f2(start.x)); A(e, 'y1', f2(start.y)); A(e, 'x2', f2(tip.x)); A(e, 'y2', f2(tip.y));
       }
-      A(this.core, 'stroke', c.core); A(this.core, 'stroke-width', f2(w)); A(this.core, 'opacity', f2(vis));
+      A(this.core, 'stroke', core); A(this.core, 'stroke-width', f2(w)); A(this.core, 'opacity', f2(vis));
       A(this.core, 'stroke-dasharray', s.dash ? '10 12' : 'none');
-      A(this.glow, 'stroke', c.glow); A(this.glow, 'stroke-width', f2(12 + s.hl * 12)); A(this.glow, 'opacity', f2(vis * (0.14 + s.hl * 0.26)));
+      A(this.glow, 'stroke', c.glow); A(this.glow, 'stroke-width', f2(12 + s.hl * 12)); A(this.glow, 'opacity', f2(vis * (1 - s.dim) * (0.14 + s.hl * 0.26)));
       const af = s.arrow * G.clamp((s.prog - 0.9) / 0.1, 0, 1);
       if (af > 0) {
         const p1 = G.at(tip, s.angle + 152, 23), p2 = G.at(tip, s.angle - 152, 23);
         A(this.arr, 'd', `M${f2(p1.x)} ${f2(p1.y)} L${f2(tip.x)} ${f2(tip.y)} L${f2(p2.x)} ${f2(p2.y)}`);
       }
-      A(this.arr, 'stroke', c.core); A(this.arr, 'stroke-width', f2(w)); A(this.arr, 'opacity', f2(vis * af));
+      A(this.arr, 'stroke', core); A(this.arr, 'stroke-width', f2(w)); A(this.arr, 'opacity', f2(vis * af));
       const tr = s.prog > 0.01 && s.prog < 0.99 ? 1 : 0;
       A(this.tracer, 'cx', f2(tip.x)); A(this.tracer, 'cy', f2(tip.y)); A(this.tracer, 'opacity', f2(tr * s.op));
       A(this.tracer, 'style', `filter: drop-shadow(0 0 8px ${c.glow})`);
@@ -200,7 +220,12 @@
         minor: false, rightMark: true, fillOp: 1, sub: '', subColor: '#ffd426', ring: 0, labelColor: '#fff', dim: 0,
         val: '', valOp: 0, valGap: 44, valColor: '#fff',
       }, props);
-      this.fill = this.mk('arcf', 'path', {});
+      // interior: a radial glow, strongest along the arc and fading toward the vertex,
+      // so the sector reads as lit by its arc (a flat translucent wedge goes grey on navy)
+      this.grad = el('radialGradient', { id: 'ag' + (++gradId), gradientUnits: 'userSpaceOnUse' }, scene.defs);
+      this.els.push(this.grad);
+      this.stops = [[0, 0.1], [0.55, 0.3], [0.9, 0.62], [1, 0.8]].map(([o, a]) => el('stop', { offset: o, 'stop-opacity': a }, this.grad));
+      this.fill = this.mk('arcf', 'path', { fill: `url(#${this.grad.id})` });
       this.vl = this.mk('lbl', 'text', { class: 'lbl-val', 'text-anchor': 'middle', 'dominant-baseline': 'central' });
       this.glow = this.mk('arcs', 'path', { fill: 'none', 'stroke-linecap': 'round' });
       this.core = this.mk('arcs', 'path', { fill: 'none', 'stroke-linecap': 'round' });
@@ -230,7 +255,8 @@
       const s = this.st, c = C(s.color), O = this.scene.pt(s.at);
       const { a0, sw } = this.geom();
       const d = sw * s.prog;
-      const vis = s.op * (1 - s.dim * 0.7) * (s.prog > 0.001 ? 1 : 0);
+      const vis = s.op * dimOp(s.dim) * (s.prog > 0.001 ? 1 : 0);
+      const core = tone(c.core, s.dim);
       const isRight = s.rightMark && Math.abs(sw - 90) < 0.01 && s.prog > 0.98;
       let dPath, fPath;
       if (isRight) {
@@ -243,9 +269,11 @@
         fPath = G.arcPath(O, s.r, a0, d, true);
       }
       A(this.core, 'd', dPath || 'M0 0'); A(this.glow, 'd', dPath || 'M0 0'); A(this.fill, 'd', fPath || 'M0 0');
-      A(this.core, 'stroke', c.core); A(this.core, 'stroke-width', f2(3.5 + s.hl * 3 + s.hov * 1.5)); A(this.core, 'opacity', f2(vis));
-      A(this.glow, 'stroke', c.glow); A(this.glow, 'stroke-width', f2(10 + s.hl * 10)); A(this.glow, 'opacity', f2(vis * (0.16 + s.hl * 0.3)));
-      A(this.fill, 'fill', c.fill); A(this.fill, 'opacity', f2(vis * s.fillOp * (1 + s.hl * 1.2 + s.hov * 0.6)));
+      A(this.core, 'stroke', core); A(this.core, 'stroke-width', f2(3.5 + s.hl * 3 + s.hov * 1.5)); A(this.core, 'opacity', f2(vis));
+      A(this.glow, 'stroke', c.glow); A(this.glow, 'stroke-width', f2(10 + s.hl * 10)); A(this.glow, 'opacity', f2(vis * (1 - s.dim) * (0.16 + s.hl * 0.3)));
+      A(this.grad, 'cx', f2(O.x)); A(this.grad, 'cy', f2(O.y)); A(this.grad, 'r', f2(isRight ? Math.max(24, s.r * 0.42) * 1.42 : s.r));
+      for (const st of this.stops) A(st, 'stop-color', core);
+      A(this.fill, 'opacity', f2(vis * Math.min(1, s.fillOp * 0.6 * (1 + s.hl * 1.2 + s.hov * 0.6))));
       // focus ring (dashed concentric arc)
       A(this.ringEl, 'd', G.arcPath(O, s.r + 16, a0, sw, false) || 'M0 0');
       A(this.ringEl, 'stroke', '#ffd426'); A(this.ringEl, 'opacity', f2(s.ring * s.op));
@@ -256,7 +284,7 @@
       const lop = s.op * s.labelOp * G.clamp((s.prog - 0.55) / 0.45, 0, 1);
       A(this.lbl, 'x', f2(lp.x)); A(this.lbl, 'y', f2(lp.y)); T(this.lbl, txt);
       // colour as an inline style: the label classes set a CSS fill that would override the attribute
-      A(this.lbl, 'opacity', f2(lop * (1 - s.dim * 0.5))); A(this.lbl, 'style', `fill:${s.labelColor}`);
+      A(this.lbl, 'opacity', f2(lop * (1 - s.dim * 0.25))); A(this.lbl, 'style', `fill:${/^#[0-9a-f]{6}$/i.test(s.labelColor) ? tone(s.labelColor, s.dim * 0.7) : s.labelColor}`);
       A(this.lbl, 'class', s.label === 'auto' || /°/.test(txt) ? 'lbl-ms' : 'lbl-num');
       // classification badge
       if (s.sub) {
@@ -272,9 +300,9 @@
         const vp = G.at(O, a0 + sw / 2, s.r + s.labelGap + s.valGap + (sw < 40 ? (40 - sw) * 1.4 : 0));
         A(this.vl, 'x', f2(vp.x)); A(this.vl, 'y', f2(vp.y));
         T(this.vl, s.val === 'auto' ? `${Math.round(sw)}°` : s.val);
-        A(this.vl, 'fill', s.valColor);
+        A(this.vl, 'fill', /^#[0-9a-f]{6}$/i.test(s.valColor) ? tone(s.valColor, s.dim * 0.5) : s.valColor);
       }
-      A(this.vl, 'opacity', f2(s.val ? s.op * s.valOp * (1 - s.dim * 0.6) * (s.prog > 0.5 ? 1 : 0) : 0));
+      A(this.vl, 'opacity', f2(s.val ? s.op * s.valOp * (1 - s.dim * 0.3) * (s.prog > 0.5 ? 1 : 0) : 0));
       if (this.hitEl) A(this.hitEl, 'd', G.arcPath(O, Math.max(s.r * 2.1, 120), a0, sw, true) || 'M0 0');
     }
   }
@@ -288,7 +316,7 @@
       this.drags = new Map();
       this.enabled = false;
       this.L = {};
-      const defs = el('defs', {}, svg);
+      const defs = this.defs = el('defs', {}, svg);
       for (const n of ['fxb', 'arcf', 'arcs', 'rayg', 'ray', 'fxf', 'vtx', 'lbl', 'hit', 'hdl']) this.L[n] = el('g', { 'data-layer': n }, svg);
       this.L.hit.setAttribute('class', 'hits');
       Tween.onFrame(() => this.render());

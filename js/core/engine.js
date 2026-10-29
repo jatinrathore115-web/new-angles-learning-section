@@ -52,12 +52,13 @@
         '#n' picks the n-th occurrence), so the narration drives the geometry. */
     async say(text, opts = {}) {
       if (!this.alive) throw ABORT;
-      const sc = UI.line(text, { tone: opts.tone || '', dur: Voice.duration(text) });
+      const sc = UI.narrate(text, { tone: opts.tone || '' });
       const cues = this.cues(sc, opts.cues);
-      await this.$(Voice.speak(text));
+      await this.$(sc.promise);
       await this.$(cues);
       await this.wait(opts.after ?? 160);
     }
+    /** run each cue when the line's clock (the voice itself) reaches its word */
     cues(sc, cues) {
       if (!cues || !sc) return Promise.resolve();
       const jobs = [];
@@ -69,13 +70,17 @@
           if (parts.every((p, j) => sc.times[i + j].key === p) && ++count === nth) { idx = i; break; }
         }
         if (idx < 0) { console.warn(`[${this.screen.id}] cue "${k}" not in line`); continue; }
-        const delay = Math.max(0, sc.start + sc.times[idx].t * Tween.TS - performance.now());
+        const at = sc.times[idx].t;
         jobs.push(new Promise(res => {
-          const t = setTimeout(() => {
+          let off = null;
+          const fire = () => {
+            off && off(); off = null;
             if (!this.alive) return res();
             Promise.resolve().then(fn).catch(() => { }).then(res);
-          }, delay);
-          this.cleanups.push(() => { clearTimeout(t); res(); });
+          };
+          if (sc.clock() >= at) fire();
+          else off = Tween.onFrame(() => { if (!this.alive || sc.clock() >= at) fire(); });
+          this.cleanups.push(() => { off && off(); off = null; res(); });
         }));
       }
       return Promise.all(jobs);
@@ -182,12 +187,9 @@
     /** replay the narration line on screen: words and voice start again together
         (one audio element, so a replay simply restarts it — voices never overlap) */
     replay() {
-      const c = UI.currentLine();
-      if (!c) return;
+      if (!UI.currentLine()) return;
       Sound.play('ui.select');
-      Voice.stop(false);
-      UI.restartLine(Voice.duration(c.text));
-      Voice.speak(c.text, { force: true }).catch(() => { });
+      UI.replayLine();
     },
 
     markDone(id) { this.done.add(id); this.refreshMap(); },
@@ -266,7 +268,7 @@
     buildMap() {
       const grid = document.getElementById('mapGrid');
       const map = document.getElementById('map');
-      grid.innerHTML = CHAPTERS.map((c, ci) => `<div class="map-col"><h4>${c.t}</h4>${this.screens.map((s, i) => s.chapter === ci ? `<button data-i="${i}" title="${(s.title || '').replace(/\*/g, '').replace(/"/g, '&quot;')}"><b>${String(i + 1).padStart(2, '0')}</b>${s.topicShort || s.topic}</button>` : '').join('')}</div>`).join('');
+      grid.innerHTML = CHAPTERS.map((c, ci) => `<div class="map-col"><h4>${c.t}</h4>${this.screens.map((s, i) => s.chapter === ci ? `<button data-i="${i}" title="${Voice.plain(s.title || '').replace(/"/g, '&quot;')}"><b>${String(i + 1).padStart(2, '0')}</b>${s.topicShort || s.topic}</button>` : '').join('')}</div>`).join('');
       grid.addEventListener('click', e => {
         const b = e.target.closest('button[data-i]');
         if (!b) return;

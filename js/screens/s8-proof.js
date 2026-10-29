@@ -360,6 +360,10 @@
       await ctx.say(this.title, { cues: {
         // equal totals → one equation (the same move as before, quicker this time)
         subtract: () => (built = (async () => {
+          // the reason first: both sums equal the same 180°, so they equal each other
+          state('s1', { v: 'hl' }); state('s2', { v: 'hl' }); Sound.play('equation.snap');
+          await ctx.wait(650);
+          state('s1', { v: 'dimt' }); state('s2', { v: 'dimt' });
           const l1 = UI.rectOf(P.q('s1', '[data-k="a"]')), l2 = UI.rectOf(P.q('s2', '[data-k="a"]'));
           state('s3', { e: '' });
           UI.fly('∠1 + ∠2', { x: l1.x + 80, y: l1.cy }, P.q('s3', '[data-k="p1"]'), { dur: 600 });

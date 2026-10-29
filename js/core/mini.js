@@ -4,9 +4,10 @@
 (function () {
   const f = n => (Math.round(n * 100) / 100);
   const col = c => Scene.COL[c] || Scene.COL.cyan;
+  let gid = 0;
 
   class Builder {
-    constructor() { this.back = ''; this.mid = ''; this.top = ''; this.hl = ''; this.b = null; }
+    constructor() { this.defs = ''; this.back = ''; this.mid = ''; this.top = ''; this.hl = ''; this.b = null; }
     /** grow the bounds of the visible drawing (highlight overlays are not counted) */
     fit(p, pad = 0) {
       const b = this.b || (this.b = { x0: Infinity, y0: Infinity, x1: -Infinity, y1: -Infinity });
@@ -31,7 +32,10 @@
     arc(O, a0, a1, r, c = 'mag', opt = {}) {
       const s = G.ccw(a0, a1), k = col(c);
       for (let t = 0; t <= s; t += Math.max(1, s / 24)) this.fit(G.at(O, a0 + t, r), 3);
-      this.back += `<path d="${G.arcPath(O, r, a0, s, true)}" fill="${k.fill}"/>`;
+      // interior lit from its arc, as on the stage (a flat translucent fill goes grey on navy)
+      const id = 'mg' + (++gid);
+      this.defs += `<radialGradient id="${id}" gradientUnits="userSpaceOnUse" cx="${f(O.x)}" cy="${f(O.y)}" r="${f(r)}"><stop offset="0" stop-color="${k.core}" stop-opacity=".06"/><stop offset=".6" stop-color="${k.core}" stop-opacity=".2"/><stop offset="1" stop-color="${k.core}" stop-opacity=".5"/></radialGradient>`;
+      this.back += `<path d="${G.arcPath(O, r, a0, s, true)}" fill="url(#${id})"/>`;
       this.back += `<path class="m-arc" d="${G.arcPath(O, r, a0, s, false)}" fill="none" stroke="${k.core}"/>`;
       if (opt.label) {
         const l = G.at(O, a0 + s / 2, r + (opt.gap || 24));
@@ -71,7 +75,7 @@
         const k = Math.max(0.84, (b.x1 - b.x0 + 24) / w, (b.y1 - b.y0 + 24) / h);   // up to ~1.2× zoom for small drawings
         vb = `${f(cx - w * k / 2)} ${f(cy - h * k / 2)} ${f(w * k)} ${f(h * k)}`;
       }
-      return `<svg class="mini" viewBox="${vb}">${this.back}${this.hl}${this.mid}${this.top}</svg>`;
+      return `<svg class="mini" viewBox="${vb}">${this.defs ? `<defs>${this.defs}</defs>` : ''}${this.back}${this.hl}${this.mid}${this.top}</svg>`;
     }
   }
 

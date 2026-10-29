@@ -129,11 +129,11 @@
       m.hlVertex(Pv); m.hlVertex(Q);
       m.arc(Pv, 0, 80, 38, 'mag', { label: '80°', gap: 22 }).arc(Q, 0, 100, 38, 'cyan', { label: '100°', gap: 24 });
       m.ray(Pv, 0, 120, 'mag', { plain: true }).ray(Pv, 80, 115, 'mag', { plain: true }).v(Pv);
-      m.ray(Q, 0, 115, 'cyan', { plain: true }).ray(Q, 100, 115, 'gold', { plain: true }).v(Q);
+      m.ray(Q, 0, 115, 'cyan', { plain: true }).ray(Q, 100, 115, 'cyan', { plain: true }).v(Q);
     }
     return m.svg(380, 230);
   }
-  const pairItems = () => ['A', 'B'].map(id => ({ id, aria: id === 'A' ? 'Ray standing on a line' : 'Two separate angles', svg: pairCard(id) }));
+  const pairItems = () => ['A', 'B'].map(id => ({ id, head: id === 'A' ? 'FIRST PAIR' : 'SECOND PAIR', aria: id === 'A' ? 'First pair: a ray standing on a line' : 'Second pair: two separate angles', svg: pairCard(id) }));
   const totalNote = '<div class="mtot">180°</div>';
 
   const S72 = {

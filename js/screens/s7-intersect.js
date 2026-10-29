@@ -100,19 +100,21 @@
     id: 'S43', chapter: 6, topic: 'INTERSECTING LINES', topicShort: 'Count the angles', cfu: true,
     title: 'How many *angles* can you see?',
     async run(ctx, S) {
-      crossFig(S, { c: 62 });
+      // the names ∠1–∠4 would give the count away: each appears as its angle is found
+      crossFig(S, { c: 62, labels: false });
       ctx.state('DEMONSTRATE');
       await reveal(ctx, S, IDS, 70);
       await turnCD(S, 62);
       ctx.say(this.title).catch(() => { });
       await ctx.wait(400);
+      tag('tTap', 'TAP EACH ANGLE TO COUNT IT', { x: RX, y: 400, color: 'muted', size: 'sm' });
       // each region answers a tap (and a hover) by lighting up; the count is the learner's
       const found = new Set();
       let finish; const all = ctx.until(r => finish = r);
       ARCS.forEach(id => S.tap(id, () => {
         if (found.has(id)) return;
         found.add(id);
-        S.get(id).to({ fillOp: 2, color: 'gold' }, 250);
+        S.get(id).to({ fillOp: 2, color: 'gold', labelOp: 1 }, 250);
         S.pulse(id, 600);
         Sound.play('equation.snap');
         tag('cnt', String(found.size), { x: RX, y: 480, color: 'white', size: 'q' });
@@ -122,6 +124,7 @@
       ctx.idle(() => { const n = ARCS.find(id => !found.has(id)); n && S.pulse(n, 800); });
       await all;
       S.clearInteractions();
+      P.drop('tTap');
       UI.correct();
       await ctx.advance(700);
     },
@@ -332,14 +335,14 @@
     id: 'S53', chapter: 6, topic: 'MEASURE', topicShort: 'Measuring suggests…', holdTitle: true, persist: ['veq'],
     title: 'Measuring *suggests* that opposite angles are equal.',
     async run(ctx, S) {
-      crossFig(S, { c: 62, mode: 'pairs' });
+      crossFig(S, { c: 62, mode: 'pairs', vals: ARCS });
       P.set('veq', { html: eq([{ t: '∠1', c: 'gold' }, '=', { t: '∠3', c: 'gold' }], 'xl'), x: RX, y: 470, cls: 'eqrow' });
       ctx.state('DEMONSTRATE');
       await reveal(ctx, S, IDS, 70);
       await ctx.say(this.title, { cues: { suggests: async () => {
         await turnCD(S, 62, 700);
         // evidence, not proof: the diagram steps back, and the claim is marked as measured
-        ['O', 'OA', 'OB', 'OC', 'OD', ...ARCS].forEach(id => S.get(id).to({ dim: 0.7 }, 500));
+        ['O', 'OA', 'OB', 'OC', 'OD', ...ARCS].forEach(id => S.get(id).to({ dim: 0.5 }, 500));
         await ctx.wait(500);
         tag('tEv', 'MEASURED — NOT YET PROVED', { x: RX, y: 548, color: 'muted', size: 'sm' });
       } } });

@@ -2,13 +2,22 @@
 (function () {
   const stage = document.getElementById('stage');
 
-  // proportional 16:9 scaling of the whole experience
+  // proportional 16:9 scaling of the whole experience. The visual viewport is the
+  // truth on phones (browser bars, pinch, on-screen keyboard); small scales lift the
+  // finest text a step (#stage.small)
   function fit() {
-    const s = Math.min(window.innerWidth / 1600, window.innerHeight / 900);
+    const vv = window.visualViewport;
+    if (vv && vv.scale > 1.01) return;   // the learner is pinch-zooming: hold the fit, don't fight it
+    const w = vv ? vv.width : window.innerWidth, h = vv ? vv.height : window.innerHeight;
+    const s = Math.min(w / 1600, h / 900);
     stage.style.setProperty('--s', s);
+    stage.classList.toggle('small', s < 0.6);
   }
   window.addEventListener('resize', fit);
+  window.addEventListener('orientationchange', () => setTimeout(fit, 250));
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', fit);
   fit();
+  document.getElementById('bPortrait').addEventListener('click', () => document.body.classList.add('portrait-ok'));
 
   // a few slow floating luminance motes (very subtle)
   const motes = document.getElementById('bgMotes');
@@ -52,7 +61,7 @@
   document.getElementById('bStart').addEventListener('click', () => {
     Sound.init();
     Voice.unlock();          // inside the Begin gesture, so tablets allow narration later
-    setTimeout(() => Voice.prefetch(), 1500);
+    Voice.prefetch();        // clips download in lesson order while the first line plays
     start.classList.add('gone');
     setTimeout(() => start.classList.remove('done'), 900);
     Engine.go(0, 1);

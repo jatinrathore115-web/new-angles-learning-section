@@ -29,6 +29,12 @@
     for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
   }
 
+  // iOS/Android suspend the effects context after a call, a lock or a background tab;
+  // the next touch (or the page coming back) wakes it again
+  const wake = () => { if (ctx && ctx.state !== 'running' && ctx.state !== 'closed') ctx.resume().catch(() => { }); };
+  document.addEventListener('pointerdown', wake, true);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) wake(); });
+
   function env(g, t, a, peak, dec, sustain = 0.0001) {
     g.gain.cancelScheduledValues(t);
     g.gain.setValueAtTime(0.0001, t);

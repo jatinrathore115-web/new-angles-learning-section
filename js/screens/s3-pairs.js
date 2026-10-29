@@ -119,7 +119,7 @@
   /* ===================================================== 15 */
   const S15 = {
     id: 'S15', chapter: 2, topic: 'COMPLEMENTARY', topicShort: 'Complementary angles', holdTitle: true, persist: ['sum'],
-    title: 'Angles whose measures add to 90° are called *complementary angles.*',
+    title: 'Angles whose measures add to 90° | are called *complementary angles.*',
     async run(ctx, S) {
       pairFig(S, { b1: 35 });   // the swung-in copy fades: the two original angles remain
       P.set('sum', { html: resolved(35, 55, 90), ...EQ, cls: 'eqrow' });

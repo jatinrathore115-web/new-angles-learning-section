@@ -211,7 +211,13 @@
       await reveal(ctx, S, IDS, 80);
       await settle(S, 64, 180);
       const upd = liveSum(S);
-      const line = ctx.say(this.title);
+      // "always" holds only because the non-common arms make one line: that condition is
+      // traced as the line is said and stays written under the sum, so the rule is never
+      // read as "any two adjacent angles make 180°"
+      const line = ctx.say(this.title, { cues: { adjacent: () => {
+        lineTrace(S, 'OA', 'OB', { color: 'gold', dur: 800, hold: 300, width: 4 });
+        tag('tCond', 'NON-COMMON ARMS IN A LINE', { x: RX, y: 548, color: 'muted', size: 'sm' });
+      } } });
       await ctx.wait(300);
       // the two measures travel to one equation; the total locks in
       for (const [k, id] of [['x', 'a2'], ['y', 'a1']]) {
@@ -313,7 +319,7 @@
         const v = cards.value;
         UI.Dock.enableCheck(false);
         ctx.state('EXPLAIN');
-        await Lab.conditions(ctx, cards, v, [['ADJACENT', true], ['COMMON ARM', true], ['OUTER ARMS FORM A LINE', v === 'B']]);
+        await Lab.conditions(ctx, cards, v, [['ADJACENT', true], ['NON-COMMON ARMS IN A LINE', v === 'B']]);
         if (v === 'B') break;
         cards.card(v).classList.add('bad');
         await ctx.bad('Adjacent, with a common arm — but do the *outer arms* form one straight line?');

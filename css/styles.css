@@ -124,7 +124,7 @@ button { font: inherit; color: inherit; }
 #geo .lbl-pt { font-size: 36px; font-weight: 800; font-style: italic; fill: #fff; }
 #geo .lbl-ms { font-size: 38px; font-weight: 800; font-style: italic; fill: #fff; }
 #geo .lbl-num { font-size: 32px; font-weight: 800; fill: #fff; }
-#geo .lbl-badge { font-size: 15px; font-weight: 800; letter-spacing: .14em; font-style: normal; stroke-width: 0; }
+#geo .lbl-badge { font-size: 17px; font-weight: 800; letter-spacing: .14em; font-style: normal; stroke-width: 0; }
 #geo .hit { fill: transparent; stroke: transparent; cursor: pointer; pointer-events: all; }
 #geo .hit-line { stroke: transparent; stroke-width: 36; stroke-linecap: round; cursor: pointer; pointer-events: stroke; fill: none; }
 #geo .handle-hit { cursor: grab; outline: none; }
@@ -163,10 +163,15 @@ button { font: inherit; color: inherit; }
 }
 .heading.long { font-size: 40px; line-height: 1.12; }
 .heading.xlong { font-size: 33px; line-height: 1.16; }
-.heading .ln { display: inline-block; max-width: 1240px; }
-.heading .w { display: inline-block; opacity: 0; transform: translateY(9px); transition: opacity .34s var(--ease-out), transform .4s var(--ease-out); }
-.heading.in .w { opacity: 1; transform: none; }
-.heading.out .w { opacity: 0; transform: translateY(-10px); transition-duration: .18s; transition-delay: 0s !important; }
+/* words rise in as the narrator reaches them (js/core/ui.js narrate); a long line is two
+   chunks stacked in one grid cell, so the swap never moves the layout below it */
+.heading { display: grid; justify-items: center; }
+.heading .ln { grid-area: 1 / 1; align-self: center; display: inline-block; max-width: 1240px; transition: opacity .32s var(--ease-out), transform .38s var(--ease-out); }
+.heading .ln.next { visibility: hidden; }
+.heading .ln.gone { opacity: 0; transform: translateY(-14px); pointer-events: none; }
+.heading .w { display: inline-block; opacity: 0; transform: translateY(9px); transition: opacity .3s var(--ease-out), transform .36s var(--ease-out), text-shadow .25s; }
+.heading.in .w.on { opacity: 1; transform: none; }
+.heading.out .w { opacity: 0; transform: translateY(-10px); transition-duration: .18s; }
 .heading .tb { opacity: 0; transition: opacity .3s; }
 .heading.in .tb { opacity: 1; }
 .heading em { font-style: italic; color: var(--gold); text-shadow: 0 0 16px rgba(255, 212, 38, .45); }
@@ -406,7 +411,12 @@ button { font: inherit; color: inherit; }
   transition: border-color .25s, background .25s, box-shadow .25s, opacity .4s;
 }
 .dslot.over { border-color: var(--gold); background: rgba(255, 212, 38, .1); box-shadow: 0 0 16px rgba(255, 212, 38, .35); }
-.dslot.done { opacity: 0; }
+.dslot.done { opacity: 0; pointer-events: none; }
+/* tap/keyboard placing: the chosen name lifts, open slots invite it */
+.dlabel.sel { transform: translate(-50%, -62%) scale(1.06); box-shadow: 0 10px 26px rgba(0, 0, 0, .4), 0 0 26px rgba(255, 212, 38, .7); }
+.dlabel:focus-visible, .dslot:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
+.dslot.ready { cursor: pointer; border-color: rgba(255, 212, 38, .75); animation: slotReady 1.4s ease-in-out infinite; }
+@keyframes slotReady { 50% { box-shadow: 0 0 18px rgba(255, 212, 38, .35); background: rgba(255, 212, 38, .07); } }
 
 /* Mini figure cards (F02, F05, F22) */
 .cards { position: absolute; display: flex; gap: 28px; }
@@ -429,7 +439,7 @@ button { font: inherit; color: inherit; }
 .mcard.sel .mcard-k span { border-color: var(--gold); color: #02163a; background: var(--gold); box-shadow: 0 0 10px var(--gold); }
 .mcard.ok .mcard-k span { border-color: var(--mint); background: var(--mint); color: #02163a; }
 .mcard svg { display: block; width: 100%; height: auto; margin-top: 6px; overflow: visible; }
-.mcard-note { min-height: 22px; margin-top: 6px; font-size: 15px; color: #bcd0f2; text-align: center; }
+.mcard-note { min-height: 22px; margin-top: 6px; font-size: 16px; color: #bcd0f2; text-align: center; }
 
 /* Mini SVG styling */
 .mini .m-ray { stroke-width: 4.5; stroke-linecap: round; fill: none; }
@@ -455,7 +465,7 @@ button { font: inherit; color: inherit; }
 @keyframes miniTrace { from { stroke-dashoffset: var(--len); } to { stroke-dashoffset: 0; } }
 
 .insp { display: flex; gap: 8px; justify-content: center; margin-top: 8px; }
-.insp button { height: 34px; padding: 0 12px; border-radius: 10px; border: 1.5px solid rgba(80, 140, 255, .5); background: rgba(10, 28, 90, .55); color: #a9c4ff; font-size: 13px; font-weight: 700; letter-spacing: .06em; cursor: pointer; transition: all .2s; }
+.insp button { height: 34px; padding: 0 12px; border-radius: 10px; border: 1.5px solid rgba(80, 140, 255, .5); background: rgba(10, 28, 90, .55); color: #a9c4ff; font-size: 15px; font-weight: 700; letter-spacing: .06em; cursor: pointer; transition: all .2s; }
 .insp button:hover, .insp button.on { border-color: var(--gold); color: var(--gold); background: rgba(255, 212, 38, .1); }
 
 /* Theorem card */
@@ -481,7 +491,7 @@ button { font: inherit; color: inherit; }
 .reason.sel { border-color: var(--gold); background: rgba(255, 212, 38, .14); color: #fff; box-shadow: 0 0 12px rgba(255, 212, 38, .3); }
 .reason.ok { border-color: var(--mint); background: rgba(52, 245, 197, .14); color: #fff; }
 .reason.bad { border-color: var(--coral); animation: nudge .32s; }
-.reason.sm { height: 38px; font-size: 14px; padding: 0 11px; }
+.reason.sm { height: 40px; font-size: 15px; padding: 0 11px; }
 
 /* Proof rows */
 .prow { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; border-radius: 14px; background: rgba(10, 28, 90, .45); border: 1.5px solid rgba(70, 120, 255, .3); transition: all .4s var(--ease-out); }
@@ -775,14 +785,14 @@ button { font: inherit; color: inherit; }
 .mcard-note { min-height: 40px; }
 .mtot { font-family: var(--f-display); font-weight: 800; font-size: 30px; color: #fff; }
 .conds { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
-.cond { font-family: var(--f-display); font-weight: 800; font-size: 12.5px; letter-spacing: .1em; padding: 5px 9px; border-radius: 8px; border: 1.5px solid rgba(120, 170, 255, .35); color: #7f95c4; transition: all .3s var(--ease-out); }
+.cond { font-family: var(--f-display); font-weight: 800; font-size: 15px; letter-spacing: .08em; padding: 6px 10px; border-radius: 8px; border: 1.5px solid rgba(120, 170, 255, .35); color: #7f95c4; transition: all .3s var(--ease-out); }
 .cond.ok { color: var(--mint); border-color: rgba(52, 245, 197, .75); background: rgba(52, 245, 197, .1); }
 .cond.ok::before { content: "✓ "; }
 .cond.no { color: #ffb0ba; border-color: rgba(255, 107, 125, .7); background: rgba(255, 107, 125, .1); }
 .cond.no::before { content: "✕ "; }
 .mini .m-hl.r-zone { opacity: 0; transition: opacity .4s; }
 .mini.show-zone .m-hl.r-zone { opacity: 1; }
-.mini .m-zl { font-size: 14px; fill: var(--gold); stroke-width: 4px; }
+.mini .m-zl { font-size: 16px; fill: var(--gold); stroke-width: 4px; }
 .mcard.bad { animation: nudge .32s var(--ease-out); }
 
 /* finale */
@@ -809,14 +819,16 @@ button { font: inherit; color: inherit; }
   border: 1px solid rgba(53, 231, 255, .28);
   box-shadow: 0 8px 26px rgba(0, 0, 0, .25), inset 0 1px 0 rgba(255, 255, 255, .05);
   -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-  opacity: 0; transition: opacity .25s ease;
+  opacity: 0; transition: opacity .25s ease, transform .38s var(--ease-out);
 }
 .heading .ln::before { content: ""; position: absolute; left: 13px; top: 14px; bottom: 14px; width: 4px; border-radius: 2px; background: var(--gold); box-shadow: 0 0 8px rgba(255, 216, 74, .6); }
 .heading.in .ln { opacity: 1; }
 .heading.out .ln { opacity: 0; }
+.heading.in .ln.gone { opacity: 0; transform: translateY(-14px); }
+.heading.in .ln.next { opacity: 0; }
 /* the word being spoken now */
-.heading .w { border-radius: 6px; }
-.heading .w.cur { text-shadow: 0 0 14px rgba(53, 231, 255, .85), 0 2px 18px rgba(0, 0, 0, .45); }
+.heading .w { border-radius: 8px; padding: 0 .06em; margin: 0 -.06em; transition: opacity .3s var(--ease-out), transform .36s var(--ease-out), text-shadow .2s, background-color .2s; }
+.heading .w.cur { background-color: rgba(53, 231, 255, .13); text-shadow: 0 0 14px rgba(53, 231, 255, .85), 0 2px 18px rgba(0, 0, 0, .45); }
 .heading .w.cur em { text-shadow: 0 0 16px rgba(255, 216, 74, .9); }
 
 /* replay narration */
@@ -832,3 +844,45 @@ button { font: inherit; color: inherit; }
 /* answer dropdowns: a coloured marker instead of a letter */
 .popt i { flex: 0 0 14px; height: 14px; }
 .popt.wrong i { flex: 0 0 26px; height: 26px; font-size: 14px; }
+
+/* =========================================================
+   Small screens (phones): the whole 1600×900 stage is scaled down, so the
+   finest text is lifted a step to stay readable (js/main.js sets .small)
+   ========================================================= */
+#stage.small .tg.sm { font-size: 21px; }
+#stage.small .cond { font-size: 17px; }
+#stage.small .mcard-note { font-size: 19px; }
+#stage.small .insp button, #stage.small .reason.sm { font-size: 17px; }
+#stage.small #geo .lbl-badge { font-size: 19px; }
+#stage.small .heading.xlong { font-size: 37px; }
+#stage { -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
+
+/* phone held upright: the lesson is landscape — ask once, never block */
+.rotate { position: fixed; inset: 0; z-index: 50; display: none; place-items: center; padding: 24px; background: rgba(1, 4, 15, .92); text-align: center; color: var(--text); font-family: var(--f-display); }
+.rotate-card { max-width: 320px; }
+.rotate-ic { display: block; width: 58px; height: 84px; margin: 0 auto 18px; border: 3px solid var(--cyan); border-radius: 14px; box-shadow: 0 0 18px rgba(53, 231, 255, .45); animation: rotIc 2.4s var(--ease-io) infinite; }
+@keyframes rotIc { 0%, 20% { transform: rotate(0); } 55%, 100% { transform: rotate(-90deg); } }
+.rotate b { display: block; font-size: 22px; font-weight: 800; letter-spacing: .04em; }
+.rotate span { display: block; margin: 8px 0 18px; font-family: var(--f-body); font-size: 15px; color: var(--muted); }
+.rotate button { height: 44px; padding: 0 20px; border-radius: 12px; border: 2px solid rgba(45, 160, 255, .7); background: rgba(6, 24, 80, .7); color: #b8d2ff; font-weight: 700; letter-spacing: .08em; cursor: pointer; }
+@media (orientation: portrait) and (max-width: 760px) { body:not(.portrait-ok) .rotate { display: grid; } }
+@media (prefers-reduced-motion: reduce) { .rotate-ic { animation: none; } }
+
+/* the valid range shown with a quick-check card's dashed zone */
+.zone-note { display: inline-block; padding: 3px 12px; border-radius: 9px; border: 1.5px dashed rgba(255, 212, 38, .8); background: rgba(255, 212, 38, .1); color: var(--gold); font-family: var(--f-display); font-weight: 800; font-size: 18px; letter-spacing: .04em; animation: noteIn .35s var(--ease-out); }
+@keyframes noteIn { from { opacity: 0; transform: translateY(4px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .heading .w, .heading .ln { transform: none !important; transition-property: opacity, background-color !important; }
+  .dslot.ready { animation: none; }
+}
+/* touch devices: the narration bar's live blur is costly on phones and low-end tablets */
+@media (pointer: coarse) {
+  .heading .ln { -webkit-backdrop-filter: none; backdrop-filter: none; background: linear-gradient(180deg, rgba(10, 30, 70, .86), rgba(8, 27, 74, .8)); }
+}
+/* chunked lines size each layer on its own (the chunks stay large, the resting whole line fits) */
+.heading.chunked .ln.long { font-size: 40px; line-height: 1.12; }
+.heading.chunked .ln.xlong { font-size: 33px; line-height: 1.16; }
+#stage.small .heading.chunked .ln.xlong { font-size: 37px; }
+.heading .ln.whole { transition-delay: .12s; }
+.heading .ln.whole { white-space: nowrap; }

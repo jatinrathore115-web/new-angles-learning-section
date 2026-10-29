@@ -142,7 +142,7 @@
   /* ===================================================== 25 */
   const S25 = {
     id: 'S25', chapter: 3, topic: 'ADJACENT ANGLES', topicShort: 'Definition', persist: ['tAdj'], holdTitle: true,
-    title: 'Two angles which share a common arm and vertex without any overlap are called *adjacent angles.*',
+    title: 'Two angles which share a common arm and vertex without any overlap | are called *adjacent angles.*',
     async run(ctx, S) {
       adjFig(S, 'merged');
       S.get('OC').to({ width: 8 }, 300);
