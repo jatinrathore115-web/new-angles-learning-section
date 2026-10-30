@@ -12,3 +12,9 @@ desktop.ini
 
 .vercel
 .env*
+
+# testing (Playwright)
+node_modules/
+
+# Playwright QA output (screenshots + per-run reports)
+qa/

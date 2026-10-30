@@ -26,6 +26,9 @@
     let brk = false;
     src.split(/(\*[^*]+\*)/).filter(Boolean).forEach(part => {
       const em = /^\*.*\*$/.test(part);
+      // punctuation straight after an *emphasis* closes that word ("*vertex*, and" → "vertex," not "vertex ,")
+      const tail = !em && out.length && part.match(/^[,.;:?!]+/);
+      if (tail) { out[out.length - 1].tail = tail[0]; part = part.slice(tail[0].length); }
       (em ? part.slice(1, -1) : part).split(/\s+/).filter(Boolean).forEach(w => {
         if (w === '|') { brk = true; return; }
         out.push({ w, em, brk, key: w.toLowerCase().replace(/[.,;:?!’'"—]+$/g, '').replace(/^['"‘]+/, '') });
@@ -34,7 +37,7 @@
     });
     return out;
   }
-  function headingHTML(src) { return wordsOf(src).map(o => o.em ? `<em>${o.w}</em>` : o.w).join(' '); }
+  function headingHTML(src) { return wordsOf(src).map(o => (o.em ? `<em>${o.w}</em>` : o.w) + (o.tail || '')).join(' '); }
 
   /** where a long line splits into two chunks (index of the first word of chunk 2), or 0.
       A marked break wins; otherwise a line over CHUNK_AT characters splits at the sentence
@@ -75,7 +78,7 @@
     const words = wordsOf(text);
     const brk = chunkBreak(words);
     const lead = lineEl.innerHTML ? 200 : 0;                   // the previous line lifts away first
-    const tl = Voice.timeline(text, words.map(o => o.w), brk ? brk - 1 : -1);
+    const tl = Voice.timeline(text, words.map(o => o.w + (o.tail || '')), brk ? brk - 1 : -1);
     let times, end;
     if (tl) { times = tl.t; end = tl.end; }
     else {
@@ -100,7 +103,7 @@
       const size = ws => { const n = chars(ws); return n > 70 ? ' xlong' : n > 46 ? ' long' : ''; };
       // the resting whole line keeps each chunk on one row: ~54 characters fit at 40px, ~68 at 33px
       const wholeSize = n => n > 54 ? ' xlong' : n > 44 ? ' long' : '';
-      const wordHTML = (o, cls) => `<span class="${cls}">${o.em ? `<em>${o.w}</em>` : o.w}</span>`;
+      const wordHTML = (o, cls) => `<span class="${cls}">${o.em ? `<em>${o.w}</em>` : o.w}${o.tail || ''}</span>`;
       lineEl.className = 'heading ' + tone + (brk ? ' chunked' : size(words));
       // a chunked line also holds the whole sentence, hidden: once the voice is done the bar
       // settles on it, so the learner can reread the complete statement (no layout shift —

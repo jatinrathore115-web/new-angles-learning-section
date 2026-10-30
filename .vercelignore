@@ -10,3 +10,10 @@
 /thumbnail0001.png
 /CORRECT.mp3
 /incorrect (1).mp3
+/node_modules/
+/tests/
+/package.json
+/package-lock.json
+/playwright.config.js
+/.mcp.json
+/qa/

@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "node",
+      "args": [
+        "D:/new angles learning section/node_modules/@playwright/mcp/cli.js",
+        "--browser", "chromium",
+        "--output-dir", "D:/new angles learning section/.tmp/playwright-mcp"
+      ],
+      "env": {
+        "PLAYWRIGHT_BROWSERS_PATH": "D:\\ms-playwright"
+      }
+    }
+  }
+}

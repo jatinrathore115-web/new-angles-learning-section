@@ -51,6 +51,22 @@
     return v;
   }
   const dimOp = dim => 1 - dim * 0.42;
+  /* label-layout geometry: does a stroke of half-width hw touch box b? (Liang–Barsky on the inflated box) */
+  function segBox(p, q, b, hw) {
+    const x0 = b.x0 - hw, y0 = b.y0 - hw, x1 = b.x1 + hw, y1 = b.y1 + hw;
+    const dx = q.x - p.x, dy = q.y - p.y;
+    let t0 = 0, t1 = 1;
+    for (const [pp, qq] of [[-dx, p.x - x0], [dx, x1 - p.x], [-dy, p.y - y0], [dy, y1 - p.y]]) {
+      if (pp === 0) { if (qq < 0) return false; continue; }
+      const r = qq / pp;
+      if (pp < 0) { if (r > t1) return false; if (r > t0) t0 = r; }
+      else { if (r < t0) return false; if (r < t1) t1 = r; }
+    }
+    return true;
+  }
+  const circBox = (c, r, b) => { const x = G.clamp(c.x, b.x0, b.x1), y = G.clamp(c.y, b.y0, b.y1); return (x - c.x) ** 2 + (y - c.y) ** 2 < r * r; };
+  const boxBox = (a, b) => a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
+  const inSector = (S, p) => Math.hypot(p.x - S.O.x, p.y - S.O.y) < S.r + 4 && G.ccw(S.a0, G.angleOf(S.O, p)) < S.sw;
   let gradId = 0;
 
   /* ---------------------------------------------------------------- base */
@@ -97,14 +113,13 @@
       A(this.ringEl, 'cx', f2(s.x)); A(this.ringEl, 'cy', f2(s.y)); A(this.ringEl, 'r', '30');
       A(this.ringEl, 'stroke', '#ffd426'); A(this.ringEl, 'opacity', f2(s.ring * s.op));
       A(this.ringEl, 'stroke-dashoffset', f2((performance.now() / 40) % 14));
-      // collision-aware label: sits in the widest gap between incident rays
+      // the label prefers the widest gap between incident rays; the scene's label pass
+      // (layoutLabels) then keeps it clear of every stroke, arc and other label
       let target = s.labelAngle;
       if (target == null) target = this.scene.widestGap(this.id, s);
-      this._la = this._la + G.delta(this._la, target) * 0.18;
-      const p = G.at(s, this._la, s.labelDist);
-      A(this.lbl, 'x', f2(p.x)); A(this.lbl, 'y', f2(p.y));
       T(this.lbl, s.label || '');
       A(this.lbl, 'opacity', f2(op * s.labelOp));
+      if (s.label) this.scene.label(this.lbl, { kind: 'vertex', at: { x: s.x, y: s.y }, dir: target, free: s.labelAngle == null, ring: 13 * s.size * k, grow: s.labelOp * s.op });
       if (this.hitEl) { A(this.hitEl, 'cx', f2(s.x)); A(this.hitEl, 'cy', f2(s.y)); }
     }
   }
@@ -146,9 +161,9 @@
       const tr = s.prog > 0.01 && s.prog < 0.99 ? 1 : 0;
       A(this.tracer, 'cx', f2(tip.x)); A(this.tracer, 'cy', f2(tip.y)); A(this.tracer, 'opacity', f2(tr * s.op));
       A(this.tracer, 'style', `filter: drop-shadow(0 0 8px ${c.glow})`);
-      const lp = G.at(O, s.angle, s.len * s.prog + 34);
-      A(this.lbl, 'x', f2(lp.x)); A(this.lbl, 'y', f2(lp.y)); T(this.lbl, s.label || '');
+      T(this.lbl, s.label || '');
       A(this.lbl, 'opacity', f2(s.op * s.labelOp * (s.prog > 0.95 ? 1 : 0)));
+      if (s.label) this.scene.label(this.lbl, { kind: 'tip', at: tip, dir: s.angle, ring: 6, grow: s.labelOp * (s.prog > 0.95 ? 1 : 0) * s.op });
       if (this.hitEl) {
         const full = this.tip(true), a = G.at(O, s.angle, Math.max(s.base, 20));
         A(this.hitEl, 'x1', f2(a.x)); A(this.hitEl, 'y1', f2(a.y)); A(this.hitEl, 'x2', f2(full.x)); A(this.hitEl, 'y2', f2(full.y));
@@ -279,17 +294,20 @@
       A(this.ringEl, 'stroke', '#ffd426'); A(this.ringEl, 'opacity', f2(s.ring * s.op));
       A(this.ringEl, 'stroke-dashoffset', f2(-(performance.now() / 30) % 16));
       // measure label on the bisector, outside the arc
-      const lp = this.labelPoint();
       const txt = s.label === 'auto' ? `${Math.round(sw)}°` : (s.label || '');
       const lop = s.op * s.labelOp * G.clamp((s.prog - 0.55) / 0.45, 0, 1);
-      A(this.lbl, 'x', f2(lp.x)); A(this.lbl, 'y', f2(lp.y)); T(this.lbl, txt);
+      T(this.lbl, txt);
+      let gap = s.labelGap; if (sw < 40) gap += (40 - sw) * 1.4;
+      const badge = this.badge;
+      if (txt) this.scene.label(this.lbl, { kind: 'arc', at: O, a0, sw, r: s.r + gap, grow: lop,
+        // the classification badge rides under its label
+        place: p => A(badge, 'transform', `translate(${f2(p.x)} ${f2(p.y + 34)})`), extraH: s.sub ? 40 : 0 });
       // colour as an inline style: the label classes set a CSS fill that would override the attribute
       A(this.lbl, 'opacity', f2(lop * (1 - s.dim * 0.25))); A(this.lbl, 'style', `fill:${/^#[0-9a-f]{6}$/i.test(s.labelColor) ? tone(s.labelColor, s.dim * 0.7) : s.labelColor}`);
       A(this.lbl, 'class', s.label === 'auto' || /°/.test(txt) ? 'lbl-ms' : 'lbl-num');
       // classification badge
       if (s.sub) {
         const w = s.sub.length * 11.5 + 22;
-        A(this.badge, 'transform', `translate(${f2(lp.x)} ${f2(lp.y + 34)})`);
         A(this.bRect, 'x', f2(-w / 2)); A(this.bRect, 'y', '-13'); A(this.bRect, 'width', f2(w));
         A(this.bRect, 'fill', 'rgba(5,16,60,.85)'); A(this.bRect, 'stroke', s.subColor); A(this.bRect, 'stroke-width', '1.5');
         A(this.bText, 'fill', s.subColor); T(this.bText, s.sub);
@@ -297,9 +315,8 @@
       A(this.badge, 'opacity', f2(s.sub ? lop : 0));
       // second label: the live measure, further out on the same bisector
       if (s.val) {
-        const vp = G.at(O, a0 + sw / 2, s.r + s.labelGap + s.valGap + (sw < 40 ? (40 - sw) * 1.4 : 0));
-        A(this.vl, 'x', f2(vp.x)); A(this.vl, 'y', f2(vp.y));
         T(this.vl, s.val === 'auto' ? `${Math.round(sw)}°` : s.val);
+        this.scene.label(this.vl, { kind: 'val', at: O, a0, sw, r: s.r + s.labelGap + s.valGap + (sw < 40 ? (40 - sw) * 1.4 : 0), grow: s.valOp * (s.prog > 0.5 ? 1 : 0) * s.op });
         A(this.vl, 'fill', /^#[0-9a-f]{6}$/i.test(s.valColor) ? tone(s.valColor, s.dim * 0.5) : s.valColor);
       }
       A(this.vl, 'opacity', f2(s.val ? s.op * s.valOp * (1 - s.dim * 0.3) * (s.prog > 0.5 ? 1 : 0) : 0));
@@ -433,7 +450,146 @@
     }
     async pulseMany(ids, dur = 650) { await Promise.all(ids.map(i => this.pulse(i, dur))); }
 
-    render() { for (const o of this.objs.values()) if (!o.dead) o.render(); for (const f of this.fx) f.render && f.render(); }
+    render() {
+      this._labels = [];
+      for (const o of this.objs.values()) if (!o.dead) o.render();
+      for (const f of this.fx) f.render && f.render();
+      this.layoutLabels();
+    }
+
+    /* ------------------------------------------------- label layout
+       Every label is registered by its object (anchor + preferred direction) and placed
+       here, after all geometry is drawn, in one geometry-aware pass: vertex names first,
+       then ray-end letters, angle names, live measures. Each tries a ring of candidate
+       spots around its anchor and takes the cheapest: overlapping a ray, arrowhead, arc,
+       focus ring, vertex dot, an already placed label or the HTML layer (narration,
+       equations, buttons) costs heavily; straying from the natural spot costs a little.
+       Angle names and measures only move along their own angle, so they always read as
+       belonging to it. A label keeps its spot unless that spot collides (no flicker); it
+       snaps while still invisible, so a learner never sees a correction, otherwise eases. */
+    label(el, spec) { spec.el = el; this._labels.push(spec); }
+    labelBox(el) {
+      const k = (el.getAttribute('class') || '') + '|' + el.textContent;
+      let b = this._bbox.get(k);
+      if (!b) {
+        let w = 0, h = 0;
+        try { const bb = el.getBBox(); w = bb.width; h = bb.height; } catch (e) { }
+        if (!w) { const fs = parseFloat(getComputedStyle(el).fontSize) || 34; return { w: el.textContent.length * fs * 0.62, h: fs * 0.8 }; }
+        b = { w, h: h * 0.8 };      // the glyphs, without the font's line spacing
+        this._bbox.set(k, b);
+      }
+      return b;
+    }
+    htmlRects() {
+      const now = performance.now();
+      if (this._htmlAt && now - this._htmlAt < 250) return this._html;
+      this._htmlAt = now;
+      const st = this.svg.getBoundingClientRect(), k = st.width / 1600 || 1;
+      const out = [];
+      document.querySelectorAll('#heading.in .ln, #persist > .pi.in, #overlay > *, #panel.on, .topnav, .dock .btn:not(.hidden), .hud .progress').forEach(e => {
+        if (e.classList.contains('flytok')) return;           // a token in flight is transient
+        const r = e.getBoundingClientRect();
+        if (!r.width || +getComputedStyle(e).opacity < 0.1) return;
+        out.push({ x0: (r.left - st.left) / k, y0: (r.top - st.top) / k, x1: (r.right - st.left) / k, y1: (r.bottom - st.top) / k });
+      });
+      return (this._html = out);
+    }
+    obstacles() {
+      const segs = [], dots = [], sectors = [];
+      const push = (p, q, hw) => segs.push({ p, q, hw });
+      const arcLine = (O, r, a0, d, hw) => { const n = Math.max(2, Math.ceil(d / 8)); let prev = G.at(O, a0, r); for (let i = 1; i <= n; i++) { const p = G.at(O, a0 + d * i / n, r); push(prev, p, hw); prev = p; } };
+      for (const o of this.objs.values()) {
+        if (o.dead) continue;
+        const s = o.st;
+        if (o.type === 'ray') {
+          if (s.op * dimOp(s.dim) < 0.2 || s.prog < 0.03) continue;
+          const O = o.origin(), tip = o.tip(), hw = s.width / 2 + 2;
+          push(G.at(O, s.angle, s.base), tip, hw);
+          if (s.arrow > 0.5 && s.prog > 0.9) { push(tip, G.at(tip, s.angle + 152, 23), hw); push(tip, G.at(tip, s.angle - 152, 23), hw); }
+        } else if (o.type === 'segment') {
+          if (s.op < 0.2 || s.prog < 0.03) continue;
+          const p1 = { x: s.x1, y: s.y1 }, p2 = { x: G.lerp(s.x1, s.x2, s.prog), y: G.lerp(s.y1, s.y2, s.prog) }, hw = s.width / 2 + 2;
+          push(p1, p2, hw);
+          const a = G.angleOf(p1, { x: s.x2, y: s.y2 });
+          if (s.arrow2 > 0.5) { push(p2, G.at(p2, a + 152, 19), hw); push(p2, G.at(p2, a - 152, 19), hw); }
+          if (s.arrow1 > 0.5) { push(p1, G.at(p1, a + 28, 19), hw); push(p1, G.at(p1, a - 28, 19), hw); }
+          if (s.dot1 > 0.5) dots.push({ c: p1, r: 15 });
+          if (s.dot2 > 0.5) dots.push({ c: { x: s.x2, y: s.y2 }, r: 15 });
+        } else if (o.type === 'vertex') {
+          if (s.op < 0.2) continue;
+          dots.push({ c: { x: s.x, y: s.y }, r: 13 * s.size + 3 });
+          if (s.ring > 0.3) dots.push({ c: { x: s.x, y: s.y }, r: 32 });
+        } else if (o.type === 'arc') {
+          if (s.op * dimOp(s.dim) < 0.2 || s.prog < 0.2) continue;
+          const O = this.pt(s.at), { a0, sw } = o.geom(), d = sw * s.prog;
+          arcLine(O, s.r, a0, d, 3);
+          if (s.ring > 0.3) arcLine(O, s.r + 16, a0, sw, 2);    // the dashed focus ring
+          sectors.push({ O, r: s.r, a0, sw: d });
+        }
+      }
+      for (const fx of this.fx) if (fx.e && fx.e.tagName === 'line' && +fx.e.getAttribute('opacity') > 0.2) {
+        const g = a => +fx.e.getAttribute(a);
+        push({ x: g('x1'), y: g('y1') }, { x: g('x2'), y: g('y2') }, 2);
+      }
+      return { segs, dots, sectors };
+    }
+    layoutLabels() {
+      const L = this._labels;
+      if (!L.length) return;
+      if (!this._bbox) { this._bbox = new Map(); if (document.fonts) document.fonts.addEventListener('loadingdone', () => this._bbox.clear()); }
+      const { segs, dots, sectors } = this.obstacles();
+      const html = this.htmlRects();
+      const placed = [];
+      const CLR = 7;                                   // clearance kept around every label
+      const ORDER = { vertex: 0, tip: 1, arc: 2, val: 3 };
+      L.sort((a, b) => ORDER[a.kind] - ORDER[b.kind]);
+      for (const sp of L) {
+        const el = sp.el, box = this.labelBox(el), hw = box.w / 2, hh = box.h / 2;
+        // distance at which the label's box, in direction a, clears a circle of radius ring by gap
+        const reach = (a, ring, gap) => ring + gap + Math.min(hw / Math.max(0.01, Math.abs(Math.cos(a * Math.PI / 180))), hh / Math.max(0.01, Math.abs(Math.sin(a * Math.PI / 180))));
+        const cands = [];
+        if (sp.kind === 'vertex' || sp.kind === 'tip') {
+          // all round the point; a tip label prefers to continue its ray, a vertex label the widest gap
+          const steps = sp.kind === 'tip' ? 9 : sp.free ? 12 : 3, inc = sp.kind === 'tip' ? 20 : 15;
+          for (let j = 0; j <= steps; j++) for (const sg of j ? [1, -1] : [1]) for (const dd of [0, 10, 20]) {
+            const a = sp.dir + sg * j * inc;
+            cands.push({ a, d: reach(a, sp.ring, 12 + dd), cost: j * (sp.kind === 'tip' ? 3 : 2.5) + dd * 0.5 });
+          }
+        } else {
+          // angle names and measures stay inside their own angle, on or near the bisector
+          const mid = sp.a0 + sp.sw / 2, spread = sp.sw > 34 ? [0, 0.16, 0.3] : [0];
+          for (const fr of spread) for (const sg of fr ? [1, -1] : [1]) for (const dr of [0, 10, 22, 36, 52])
+            cands.push({ a: mid + sg * fr * sp.sw, d: sp.r + dr, cost: fr * 40 + dr * 0.35 });
+        }
+        let best = null;
+        const prev = el.__lay;
+        for (const c of cands) {
+          const p = G.at(sp.at, c.a, c.d);
+          const bx = { x0: p.x - hw - CLR, y0: p.y - hh - CLR, x1: p.x + hw + CLR, y1: p.y + hh + CLR + (sp.extraH || 0) };
+          let cost = c.cost;
+          for (const g of segs) if (segBox(g.p, g.q, bx, g.hw)) cost += 400;
+          for (const d of dots) if (circBox(d.c, d.r, bx)) cost += 400;
+          for (const b of placed) if (boxBox(b, bx)) cost += 300;
+          for (const b of html) if (boxBox(b, bx)) cost += 250;
+          if (sp.kind === 'vertex' || sp.kind === 'tip') for (const S of sectors) if (inSector(S, p)) cost += 120;
+          if (bx.x0 < 30 || bx.y0 < 30 || bx.x1 > 1570 || bx.y1 > 870) cost += 350;
+          const key = sp.kind + Math.round(c.a) + '|' + Math.round(c.d / 4);
+          if (prev && prev.key === key) cost -= 12;            // stay where you are unless that spot is now worse
+          if (!best || cost < best.cost) best = { cost, key, dx: p.x - sp.at.x, dy: p.y - sp.at.y };
+        }
+        const shown = +(el.getAttribute('opacity') || 0) > 0.04;
+        let st = el.__lay;
+        if (!st || !shown) st = el.__lay = { key: best.key, dx: best.dx, dy: best.dy };
+        else { st.key = best.key; st.dx += (best.dx - st.dx) * 0.22; st.dy += (best.dy - st.dy) * 0.22; }
+        const x = sp.at.x + st.dx, y = sp.at.y + st.dy;
+        // appear: the object fades it in; here it scales 0.9 → 1 and settles 6 px, then holds still
+        const g = G.clamp(sp.grow ?? 1, 0, 1), sc = 0.9 + 0.1 * g;
+        A(el, 'x', '0'); A(el, 'y', '0');
+        A(el, 'transform', `translate(${f2(x)} ${f2(y + (1 - g) * 6)}) scale(${f2(sc)})`);
+        if (sp.place) sp.place({ x, y });
+        if (shown) placed.push({ x0: x - hw, y0: y - hh, x1: x + hw, y1: y + hh + (sp.extraH || 0) });
+      }
+    }
 
     /* ------------------------------------------------- effects (fx) */
     ripple(p, color = 'cyan', strength = 1) {

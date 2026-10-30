@@ -48,6 +48,7 @@ button { font: inherit; color: inherit; }
   transform: translate(-50%, -50%) scale(var(--s, 1));
   transform-origin: center;
   overflow: hidden;
+  overflow: clip;            /* never scrollable: a focus() or scrollIntoView can not shift the lesson */
   background: var(--bg0);
   border-radius: 6px;
   user-select: none; -webkit-user-select: none;
@@ -57,7 +58,7 @@ button { font: inherit; color: inherit; }
 /* =========================================================
    Background environment
    ========================================================= */
-.bg { position: absolute; inset: 0; pointer-events: none; }
+.bg { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }   /* the perspective floor grid is far larger than the stage */
 .bg-glow {
   position: absolute; inset: 0;
   background:
@@ -538,7 +539,7 @@ button { font: inherit; color: inherit; }
 .map-col button:hover { border-color: var(--cyan); }
 
 /* Start screen: the thumbnail fills the stage; Start stands on its glowing platform */
-.start { position: absolute; inset: 0; z-index: 70; overflow: hidden; background: #020a33; --px: 0; --py: 0; }
+.start { position: absolute; inset: 0; z-index: 70; overflow: hidden; overflow: clip; background: #020a33; --px: 0; --py: 0; }
 .start-art { position: absolute; inset: 0; transform: translate3d(calc(var(--px) * -10px), calc(var(--py) * -8px), 0); transition: transform .8s var(--ease-out); }
 .start-thumb {
   position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; user-select: none;

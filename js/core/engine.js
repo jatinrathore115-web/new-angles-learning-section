@@ -40,6 +40,8 @@
 
     state(s) {
       if (!STATES.includes(s)) throw new Error('bad state ' + s);
+      // a screen left live for exploring (an arm still draggable) stays complete while the learner plays
+      if (s === 'INTERACTING' && this._state === 'COMPLETE') return;
       this._state = s;
       stage.dataset.state = s;
       this.S.enabled = LIVE.has(s);
@@ -99,6 +101,7 @@
     /** correct / incorrect feedback: sound + one explanatory sentence */
     async good(text, opts = {}) {
       this.state('CORRECT');
+      UI.Dock.enableCheck(false);   // the answer is accepted: CHECK must not look pressable while it is praised
       UI.correct();
       await this.say(text, Object.assign({ tone: 'good' }, opts));
     }

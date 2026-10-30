@@ -69,7 +69,8 @@
   }
   /** dotted connector across the vertex between two angle regions */
   function oppConnector(S, a, b, opt = {}) {
-    const pa = S.get(a).innerPoint(1.3), pb = S.get(b).innerPoint(1.3);
+    // ends inside each angle (not out on its name), so the link never crosses a label
+    const pa = S.get(a).innerPoint(0.7), pb = S.get(b).innerPoint(0.7);
     return S.trace([pa, S.pt(S.get(a).st.at), pb], Object.assign({ color: 'gold', dur: 800, width: 5, hold: 900, dotted: true }, opt));
   }
   function dimOthers(S, keepIds, all = ['a1', 'a2', 'a3', 'a4']) {
